@@ -1,9 +1,12 @@
 #ifndef PROJECT_SIMULATOR_H
 #define PROJECT_SIMULATOR_H
 
+#include "linkedlist.h"
+#include "shape.h"
+
 class Simulator
 {
-    public:      
+public:      
 
         Simulator();
         ~Simulator();
@@ -11,9 +14,10 @@ class Simulator
         void tick();
         void render();
         
-    protected:
-    private:
-
+protected:
+private:
+    
+    LinkedList<Shape*> shapes;
         
 };
 

@@ -1,20 +1,24 @@
+include ../Makefile.config
+
 HOMEPATH=../..
 SRCPATH=$(HOMEPATH)/src
 EXEPATH=$(HOMEPATH)/bin/project.exe
 
-SOURCE=main.cpp
-DEPS=
-
-
 CFLAGS=-mno-cygwin -g -Wall
-FULLSRC=$(SOURCE:%=$(SRCPATH)/%)
-OBJECTS=$(FULLSRC:.c=.o)
+CFLAGS+= -I$(GLFWPATH)/include
+LFLAGS=-L$(GLFWPATH)/lib/win32 -lglfw -lopengl32 -lglu32
 
-.cpp.o:
-	$(CXX) $(CFLAGS) -c $<
+FULLSRC=$(SOURCE:%=$(SRCPATH)/%)
+FULLDEPS=$(DEPS:%=$(SRCPATH)/%)
+OBJECTS=$(FULLSRC:.cpp=.o)
+
+%.o: %.cpp $(FULLDEPS)
+	g++ -c $(CFLAGS) $< -o $@
 
 all: $(OBJECTS)
-	gcc $(CFLAGS) $(OBJECTS) -o $(EXEPATH)
+	g++ $(CFLAGS) $(OBJECTS) $(LFLAGS) -o $(EXEPATH)
 
+clean:
+	rm -f $(OBJECTS)
 
 
