@@ -15,7 +15,7 @@ public:
 
 protected:
 
-    static const int res = 1;
+    static const int res = 2;
 
 private:
 

@@ -13,7 +13,14 @@ public:
     Vector3();
     
     Vector3 operator+(const Vector3& vect);
+    Vector3& operator+=(const Vector3& vect);
     Vector3 operator-(const Vector3& vect);
+    Vector3& operator-=(const Vector3& vect);
+    Vector3 operator*(const double scalar);
+    Vector3 operator/(const double scalar);
+    
+    double dot(const Vector3& v) const;
+    Vector3 cross(const Vector3& v) const;
     
     double getX() const;
     double getY() const;
@@ -21,6 +28,9 @@ public:
     void setX(double v);
     void setY(double v);
     void setZ(double v);
+    
+    double length() const;
+    Vector3& normalize();
     
 protected:
 private:
@@ -36,13 +46,13 @@ public:
 
     static Matrix3 createRotation(Vector3 vect);
 
-    Vector3 operator*(const Vector3& vect)
+    Vector3 operator*(const Vector3& vect);
 
 protected:
 private:
     
     double d[3][3];
-}
+};
 
 
 

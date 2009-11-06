@@ -13,12 +13,16 @@ public:
     Point* getPoint1();
     Point* getPoint2();
     
+    void addForces();
+    void calcInertialLength();
+    
 protected:
 private:
     
     Point* p1;
     Point* p2;
     double elasticity;
+    double length;
 };  
 
 

@@ -14,12 +14,55 @@ Shape::Shape(int pointcount, int springcount):
     points = new Point[pointcount];
     springs = new Spring[springcount];
     
+    this->usedpoints = springcount;
+    this->usedsprings = pointcount;
 }
 
 Shape::~Shape()
 {
     delete[] points;
     delete[] springs;
+}
+
+void Shape::addAcceleration(Vector3 acc)
+{
+    for (int i = 0; i < this->pointcount; i++)
+    {
+        this->points[i].addForce(acc * this->points[i].getMass());
+    }
+}
+
+void Shape::addSpringForces()
+{
+    for (int i = 0; i < this->springcount; i++)
+    {
+        this->springs[i].addForces();
+    }
+}
+
+void Shape::applyForces(double deltaT)
+{
+    for (int i = 0; i < this->pointcount; i++)
+    {
+        this->points[i].applyForce(deltaT);
+    }
+}
+
+void Shape::collideWithSurface(Surface* s, double deltaT)
+{
+    for (int i = 0; i < this->pointcount; i++)
+    {
+        Vector3 pos = this->points[i].getPos();
+        if (s->isPointInsideBounds(pos))
+        {
+            double distance = s->signedDistanceToPoint(pos);
+            if (distance < 0.0)
+            {
+                this->points[i].setPos(this->points[i].getPos() - (s->getNormal() * distance));
+                this->points[i].addForce(s->getNormal() * -distance);
+            }  
+        }
+    }
 }
 
 
@@ -33,7 +76,6 @@ void Shape::render()
         {
             pos = this->points[i].getPos();
             glVertex3d(pos.getX(), pos.getY(), pos.getZ());
-            //fprintf(stderr, "render: x: %f, y: %f z: %f\n", pos.getX(), pos.getY(), pos.getZ());
         }
     }
     glEnd();        

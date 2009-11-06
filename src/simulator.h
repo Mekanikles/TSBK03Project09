@@ -3,22 +3,34 @@
 
 #include "linkedlist.h"
 #include "shape.h"
+#include "surface.h"
 
 class Simulator
 {
 public:      
 
-        Simulator();
-        ~Simulator();
+    Simulator(double creationTime);
+    ~Simulator();
 
-        void tick();
-        void render();
+    void tick(double time);
+    void renderShapes();
+    void renderSurfaces();
+    void attract(Vector3 pos, double strength);
         
 protected:
 private:
     
     LinkedList<Shape*> shapes;
+    LinkedList<Surface*> surfaces;
+    
+    double currentTime;
+    double deltaTime;
         
+    void addGravity();
+    void addSpringForces();
+    void applyForces();
+    void collidePoints();
+
 };
 
 

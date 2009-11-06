@@ -33,11 +33,11 @@ void Renderer::render(Simulator* sim)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     
-    // Render simulation
+    // Render simulation shapes
     glLineWidth(1);
     glPointSize(5);
     glColor4f(1, 0, 0, 1);
-    sim->render();
+    sim->renderShapes();
     
     // Draw floor
     glColor4f(1, 1, 1, 0.4);
@@ -50,13 +50,19 @@ void Renderer::render(Simulator* sim)
     }
     glEnd();
 
+    glTranslated(0, 0.001, 0);
+
+    // Render simulation surfaces
+    glColor4f(1, 0, 0.7, 0.5);
+    sim->renderSurfaces();
+    
     // Render shadow
+    glTranslated(0, 0.001, 0);
     glLineWidth(2);
     glPointSize(8);
     glColor4f(0, 0, 0, 0.3);
-    glTranslated(0, 0.01, 0);
     glScaled(1, 0, 1);
-    sim->render();
+    sim->renderShapes();
  
 
 }

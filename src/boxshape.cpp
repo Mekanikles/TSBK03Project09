@@ -7,9 +7,10 @@
 #include "primitives.h"
 
 #include "stdio.h"
+#include <math.h>
 
 BoxShape::BoxShape(const Box& box):
-    Shape(8, 12)
+    Shape(pow(res + 1, 3), pow(res + 1, 3) * 7)
 {
     
     Vector3 v1 = box.getV1();
@@ -45,7 +46,21 @@ BoxShape::BoxShape(const Box& box):
                 
                 if (zcount < this->res)
                     this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + 1]);
-                   
+               
+                // Connect diagonals
+                if (zcount < this->res && xcount < this->res && ycount < this->res)
+                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) + (this->res + 1) + 1]);
+    
+                if (zcount > 0 && xcount < this->res && ycount < this->res)
+                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) + (this->res + 1) - 1]);
+    
+                if (zcount < this->res && xcount > 0 && ycount < this->res)
+                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) - (this->res + 1) + 1]);
+                
+                if (zcount > 0 && xcount > 0 && ycount < this->res)
+                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) - (this->res + 1) - 1]);
+        
+    
                 //fprintf(stderr, "swind: %i\n", swind);
                 pwind++;
                 
@@ -57,6 +72,14 @@ BoxShape::BoxShape(const Box& box):
         }
         ycount++;
         y = ycount * yseg;
+    }
+    
+    this->pointcount = pwind;
+    this->springcount = swind;
+    
+    for (int i = 0; i < swind; i++)
+    {
+        this->springs[i].calcInertialLength();
     }
     
 }

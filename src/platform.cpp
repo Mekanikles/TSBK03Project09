@@ -74,9 +74,11 @@ void Platform::update()
         running = false;
     }
     
-    this->old_mousex = this->mousex;
-    this->old_mousey = this->mousey;
     glfwGetMousePos(&this->mousex, &this->mousey);
+    this->rel_mousex = this->mousex - this->old_mousex;
+    this->rel_mousey = this->mousey - this->old_mousey;
+    glfwSetMousePos(this->windowWidth/2, this->windowHeight/2);
+    glfwGetMousePos(&this->old_mousex, &this->old_mousey);
 }
 
 void Platform::refreshWindow()
@@ -106,12 +108,12 @@ int Platform::getMousePosY()
 
 int Platform::getMouseRelX()
 {
-    return this->mousex - this->old_mousex;
+    return this->rel_mousex;
 }
 
 int Platform::getMouseRelY()
 {
-    return this->mousey - this->old_mousey;
+    return this->rel_mousey;
 }
 
 int Platform::getMouseButton(unsigned int button)

@@ -36,6 +36,9 @@ private:
     int mousey;
     int old_mousex;
     int old_mousey;
+    int rel_mousex;
+    int rel_mousey;
+    
     
     bool initialized;
     bool running;
