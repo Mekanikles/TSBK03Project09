@@ -8,7 +8,7 @@ Renderer::Renderer()
 {
     fprintf(stderr, "Creating renderer");
 
-    camPos = Vector3(0,2,4);
+    camPos = Vector3(0,2,16);
     camAngleX = 0;
     camAngleY = 20;
 
@@ -34,8 +34,8 @@ void Renderer::render(Simulator* sim)
 
     
     // Render simulation shapes
-    glLineWidth(1);
-    glPointSize(5);
+    glLineWidth(2);
+    glPointSize(8);
     glColor4f(1, 0, 0, 1);
     sim->renderShapes();
     

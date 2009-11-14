@@ -8,35 +8,31 @@
 
 #include "stdio.h"
 
-Shape::Shape(int pointcount, int springcount):
-    pointcount(pointcount), springcount(springcount)
+Shape::Shape(int pointcount):
+    pointcount(pointcount)
 {
     points = new Point[pointcount];
-    springs = new Spring[springcount];
-    
-    this->usedpoints = springcount;
-    this->usedsprings = pointcount;
+   
 }
 
 Shape::~Shape()
 {
     delete[] points;
-    delete[] springs;
 }
 
 void Shape::addAcceleration(Vector3 acc)
 {
     for (int i = 0; i < this->pointcount; i++)
     {
-        this->points[i].addForce(acc * this->points[i].getMass());
+        this->points[i].addImpulse(acc);
     }
 }
 
 void Shape::addSpringForces()
 {
-    for (int i = 0; i < this->springcount; i++)
+    for (int i = 0; i < this->pointcount; i++)
     {
-        this->springs[i].addForces();
+        this->points[i].addSpringForces();
     }
 }
 
@@ -59,7 +55,11 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
             if (distance < 0.0)
             {
                 this->points[i].setPos(this->points[i].getPos() - (s->getNormal() * distance));
-                this->points[i].addForce(s->getNormal() * -distance);
+                double impulse = this->points[i].getVelocity().dot(s->getNormal());
+                this->points[i].addImpulse(s->getNormal() * -impulse * s->getRestitution());
+                Vector3 friction = (this->points[i].getVelocity() - (s->getNormal() * impulse)) * -s->getFriction();
+                this->points[i].addImpulse(friction);
+                
             }  
         }
     }
@@ -69,25 +69,30 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
 void Shape::render()
 {
     Vector3 pos;
-
-    glBegin(GL_POINTS);
+    Vector3 pos2;
+    
+    for (int i = 0; i < this->pointcount; i++)
     {
-        for (int i = 0; i < this->pointcount; i++)
+
+        glBegin(GL_POINTS);
         {
             pos = this->points[i].getPos();
             glVertex3d(pos.getX(), pos.getY(), pos.getZ());
         }
-    }
-    glEnd();        
-    glBegin(GL_LINES);
-    {
-        for (int i = 0; i < this->springcount; i++)
+        glEnd();        
+        
+        LinkedList<Spring*>* springs = this->points[i].getSpringList();
+        glBegin(GL_LINES);
         {
-            pos = this->springs[i].getPoint1()->getPos();
-            glVertex3d(pos.getX(), pos.getY(), pos.getZ());
-            pos = this->springs[i].getPoint2()->getPos();
-            glVertex3d(pos.getX(), pos.getY(), pos.getZ());            
-        }
-    }   
-    glEnd();
+            for (Node<Spring*>* s = springs->getFirst(); s != NULL; s = s->next)
+            {
+                pos2 = pos - s->item->getPoint2()->getPos();
+                pos2 = pos - pos2 * 0.5;
+                glVertex3d(pos.getX(), pos.getY(), pos.getZ());
+                glVertex3d(pos2.getX(), pos2.getY(), pos2.getZ());            
+            }
+        }   
+        glEnd();
+        
+    }
 }

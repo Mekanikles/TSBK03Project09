@@ -9,20 +9,55 @@
 #include "stdio.h"
 #include <math.h>
 
-BoxShape::BoxShape(const Box& box):
-    Shape(pow(res + 1, 3), pow(res + 1, 3) * 7)
+
+int BoxShape::getPointXIndex(int wind)
+{
+    wind -= (res + 1) * (res + 1) * (wind / ((res + 1)*(res + 1)));
+    wind = (wind / (res + 1));
+    return wind;
+}
+
+int BoxShape::getPointYIndex(int wind)
+{
+    wind = (wind / ((res + 1)*(res + 1)));
+    return wind;
+}
+
+int BoxShape::getPointZIndex(int wind)
+{
+    wind -= (res + 1) * (res + 1) * (wind / ((res + 1)*(res + 1)));
+    wind -= (res + 1) * (wind / (res + 1));
+    return wind;
+}
+
+int BoxShape::getPointWindIndex(int x, int y, int z)
+{
+    return (y * (res+1) * (res+1) + x * (res+1) + z);
+}
+
+void BoxShape::addNeighbor(Point* p, int x, int y, int z)
+{
+    if (x < 0 || x > this->res || y < 0 || y > this->res || z < 0 || z > this->res)
+        return;
+
+    p->addNeighbor(&this->points[getPointWindIndex(x, y, z)]);
+    
+}
+
+BoxShape::BoxShape(const Box& box, int resolution):
+    Shape(pow(resolution + 1, 3)), res(resolution)
 {
     
     Vector3 v1 = box.getV1();
     Vector3 v2 = box.getV2();
-    double xseg = (v2.getX() - v1.getX()) / this->res;
-    double yseg = (v2.getY() - v1.getY()) / this->res;
-    double zseg = (v2.getZ() - v1.getZ()) / this->res;
+    double xseg = (v2.getX() - v1.getX()) / (double)this->res;
+    double yseg = (v2.getY() - v1.getY()) / (double)this->res;
+    double zseg = (v2.getZ() - v1.getZ()) / (double)this->res;
   
     fprintf(stderr, "Creating box shape.\n");
     int pwind = 0;
-    int swind = 0;
     // Create vertices and springs
+    
     int ycount = 0;
     double y = v1.getY();
     while (ycount <= this->res)
@@ -37,49 +72,35 @@ BoxShape::BoxShape(const Box& box):
             {
                 this->points[pwind] = Point(Vector3(x, y, z));
                 
-                //If not endpoints, connect spring to next vertex
-                if (ycount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) ]);
-
-                if (xcount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + this->res + 1]);
                 
-                if (zcount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + 1]);
-               
-                // Connect diagonals
-                if (zcount < this->res && xcount < this->res && ycount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) + (this->res + 1) + 1]);
-    
-                if (zcount > 0 && xcount < this->res && ycount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) + (this->res + 1) - 1]);
-    
-                if (zcount < this->res && xcount > 0 && ycount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) - (this->res + 1) + 1]);
+                for (int ix = -1; ix < 2; ix++)
+                {
+                    for (int iy = -1; iy < 2; iy++)
+                    {
+                        for (int iz = -1; iz < 2; iz++)
+                        {
+                            if (ix != 0 || iy != 0 || iz != 0)
+                                addNeighbor(&this->points[pwind], xcount + ix, ycount + iy, zcount + iz);
+                        }
+                    }
+                }
                 
-                if (zcount > 0 && xcount > 0 && ycount < this->res)
-                    this->springs[swind++] = Spring(&this->points[pwind], &this->points[pwind + (this->res + 1) * (this->res + 1) - (this->res + 1) - 1]);
-        
-    
                 //fprintf(stderr, "swind: %i\n", swind);
                 pwind++;
                 
                 zcount++;
-                z = zcount * zseg;        
+                z = v1.getZ() + (double)zcount * zseg;        
             }
             xcount++;
-            x = xcount * xseg;
+            x = v1.getX() + (double)xcount * xseg;
         }
         ycount++;
-        y = ycount * yseg;
+        y = v1.getY() + (double)ycount * yseg;
     }
     
-    this->pointcount = pwind;
-    this->springcount = swind;
-    
-    for (int i = 0; i < swind; i++)
+    for (int i = 0; i < pwind; i++)
     {
-        this->springs[i].calcInertialLength();
+        this->points[i].setupSprings();
     }
     
 }

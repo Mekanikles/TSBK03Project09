@@ -14,6 +14,8 @@ public:
     Vector3 getV1() const;
     Vector3 getV2() const;
     Vector3 getNormal() const;
+    double getRestitution();
+    double getFriction();
     
     bool isPointInsideBounds(Vector3 point);
     double signedDistanceToPoint(Vector3 point);
@@ -27,6 +29,8 @@ private:
     Vector3 v1;
     Vector3 v2;
     Vector3 normal;
+    double restitution;
+    double friction;
     
 
 };

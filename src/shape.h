@@ -13,7 +13,6 @@ class Shape
     public:
     
         int pointcount;
-        int springcount;
         
         virtual void render();
         void addAcceleration(Vector3 acc);
@@ -23,15 +22,11 @@ class Shape
         
     protected:
     
-        Shape(int pointcount, int springcount);
+        Shape(int pointcount);
         virtual ~Shape();
         
         Point* points;
-        Spring* springs;
-        
-        int usedpoints;
-        int usedsprings;
-        
+
     private:    
 };
 

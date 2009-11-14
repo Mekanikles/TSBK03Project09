@@ -33,7 +33,7 @@ LinkedList<T>::~LinkedList()
 template<typename T>
 void LinkedList<T>::addFirst(T item)
 {
-    fprintf(stderr, "trying to add to list\n");
+    //fprintf(stderr, "trying to add to list\n");
     Node<T>* node = new Node<T>();
     node->item = item;
     

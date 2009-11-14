@@ -4,7 +4,7 @@
 
 
 BallShape::BallShape(double radius):
-    Shape(20, 20), radius(radius)
+    Shape(20), radius(radius)
 {
     int i;
     int j;

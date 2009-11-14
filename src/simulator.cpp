@@ -13,15 +13,23 @@
 Simulator::Simulator(double creationTime)
 {
     fprintf(stderr, "Creating simulator.\n");
-    BoxShape* box = new BoxShape(Box(Vector3(-0.5, 1.5, -0.5), Vector3(0.5, 2, 0.5)));
+    BoxShape* box = new BoxShape(Box(Vector3(-2, 1.0, -2), Vector3(2, 5.0, 2)));
     this->shapes.addFirst(box);
 
-    Surface* surface = new Surface(Vector3(-2, 0, -2), Vector3(4, 0, 0), Vector3(0, 0, 4));
+    Surface* surface = new Surface(Vector3(-2, 0, -3), Vector3(4, 0, 0), Vector3(0, 0, 6));
     this->surfaces.addFirst(surface);
     
-    surface = new Surface(Vector3(1.5, 0, -2), Vector3(4, 2, 0), Vector3(0, 0, 4));
+    surface = new Surface(Vector3(1.5, 0, -3), Vector3(16, 8, 0), Vector3(0, 0, 6));
     this->surfaces.addFirst(surface);
     
+    surface = new Surface(Vector3(-17.5, 8, -3), Vector3(16, -8, 0), Vector3(0, 0, 6));
+    this->surfaces.addFirst(surface);
+    
+    surface = new Surface(Vector3(-18, 23.5, -3), Vector3(1, -16, 0), Vector3(0, 0, 6));
+    this->surfaces.addFirst(surface);
+    
+    surface = new Surface(Vector3(17, 7.5, -3), Vector3(1, 16, 0), Vector3(0, 0, 6));
+    this->surfaces.addFirst(surface);
     
     this->currentTime = creationTime;
 }
@@ -35,7 +43,7 @@ void Simulator::tick(double time)
 {
     deltaTime = time - currentTime;
     currentTime = time;
-
+    
     this->addGravity();
     
     this->addSpringForces();
@@ -43,6 +51,7 @@ void Simulator::tick(double time)
     this->applyForces();
 
     this->collidePoints();
+    
 }
 
 void Simulator::renderShapes()
@@ -80,7 +89,7 @@ void Simulator::addGravity()
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->addAcceleration(Vector3(0,-9.81, 0));
+        node->item->addAcceleration(Vector3(0,-0.981 / 2, 0) * deltaTime);
         node = node->next;
     }    
 }
@@ -90,7 +99,7 @@ void Simulator::attract(Vector3 pos, double strength)
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->addAcceleration(pos * strength);
+        node->item->addAcceleration(pos * strength * deltaTime);
         node = node->next;
     }
 }

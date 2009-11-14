@@ -27,9 +27,11 @@ private:
     double deltaTime;
         
     void addGravity();
-    void addSpringForces();
-    void applyForces();
     void collidePoints();
+    void addSpringForces();
+    
+    void applyForces();
+    
 
 };
 

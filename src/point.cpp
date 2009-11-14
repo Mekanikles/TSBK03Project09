@@ -1,15 +1,18 @@
 #include "point.h"
 
+#include  "stdlib.h"
+
 #include "primitives.h"
+#include "spring.h"
 
 Point::Point(const Vector3& pos, double mass):
-    pos(pos), old_pos(pos), mass(mass), force(Vector3()), locked(false)
+    pos(pos), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false)
 {
     
 }
 
 Point::Point():
-    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), force(Vector3()), locked(false)
+    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false)
 {
     
 }
@@ -25,29 +28,34 @@ void Point::setPos(const Vector3& pos)
     this->old_pos = pos;
 }
 
-void Point::addForce(Vector3 force)
+void Point::addImpulse(Vector3 impulse)
 {
-    this->force += force;
+   this->impulse += impulse;
 }
 
 void Point::applyForce(double deltaT)
 {
     // Verlet integration
     Vector3 temp = this->pos;
-    this->pos += this->getVelocity() * 0.99 + (this->force/this->mass) * deltaT * deltaT;
+    this->velocity = (this->pos - this->old_pos) * 0.99;
+    this->velocity += this->impulse/this->mass;
+    
+    this->pos += this->velocity;
+    this->pos += (this->impulse/this->mass) * deltaT;
+    
     this->old_pos = temp;
     
-    this->force = Vector3(0, 0, 0);
+    this->impulse = Vector3(0, 0, 0);
 }
 
-Vector3 Point::getForce()
+Vector3 Point::getImpulse()
 {
-    return this->force;
+    return this->impulse;
 }
 
 Vector3 Point::getVelocity()
 {   
-    return this->pos - this->old_pos;
+    return this->velocity; //this->pos - this->old_pos;
 }
 
 double Point::getMass()
@@ -63,4 +71,31 @@ void Point::Lock(bool set)
 bool Point::isLocked()
 {
     return this->locked;
+}
+
+void Point::addNeighbor(Point* p, double elasticity)
+{
+    Spring* s = new Spring(this, p, elasticity);
+    this->springs.addFirst(s);
+}
+
+void Point::addSpringForces()
+{
+    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
+    {
+        s->item->addForces();
+    }
+}
+
+void Point::setupSprings()
+{
+    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
+    {
+        s->item->calcInertialLength();
+    }
+}
+
+LinkedList<Spring*>* Point::getSpringList()
+{
+    return &this->springs;
 }
