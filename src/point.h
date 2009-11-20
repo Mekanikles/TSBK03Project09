@@ -37,6 +37,7 @@ protected:
     Vector3 velocity;
     Vector3 impulse;
     bool locked;
+    double old_deltaT;
     
     LinkedList<Spring*> springs;
     

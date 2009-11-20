@@ -60,11 +60,11 @@ void Spring::addForces()
         return;
     }
     
-    double intensity = this->elasticity * (this->length - inertialLength) * 0.08;
-    
+    double intensity = this->elasticity * (this->length - inertialLength) * 800;
+   
     relvel = distance * relvel.dot(distance);
     
     //fprintf(stderr, "intensity: %f\n\n", intensity);
-    p1->addImpulse(distance * -intensity);// + relvel * 0.1);
+    p1->addImpulse(distance * -intensity + relvel * 0.1);
     //p2->addImpulse(distance * intensity - relvel * 0.1);
 }

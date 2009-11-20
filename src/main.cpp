@@ -11,7 +11,7 @@ Platform* platform;
 const int screenwidth = 640;
 const int screenheight = 480;
 
-const double targetFps = 60;
+const double targetFps = 300;
 
 Simulator* sim;
 Renderer* renderer;
@@ -28,7 +28,7 @@ void handleCamera()
     
     if (platform->getMouseButton(0))
     {
-        sim->attract(Vector3(mrelx, -mrely, 0), 0.1);
+        sim->attract(Vector3(mrelx, -mrely, 0), 10);
     }
     else
     {
@@ -94,7 +94,7 @@ int main()
                    
             platform->refreshWindow();
         }
-        platform->sleep(nextFrame - t);
+        //platform->sleep(nextFrame - t);
     }
 
     delete renderer;

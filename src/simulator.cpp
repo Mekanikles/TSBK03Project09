@@ -13,7 +13,7 @@
 Simulator::Simulator(double creationTime)
 {
     fprintf(stderr, "Creating simulator.\n");
-    BoxShape* box = new BoxShape(Box(Vector3(-2, 1.0, -2), Vector3(2, 5.0, 2)));
+    BoxShape* box = new BoxShape(Box(Vector3(-2, 1.0, -2), Vector3(2, 5.0, 2)), 3);
     this->shapes.addFirst(box);
 
     Surface* surface = new Surface(Vector3(-2, 0, -3), Vector3(4, 0, 0), Vector3(0, 0, 6));
@@ -89,7 +89,7 @@ void Simulator::addGravity()
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->addAcceleration(Vector3(0,-0.981 / 2, 0) * deltaTime);
+        node->item->addAcceleration(Vector3(0,-9.81, 0));
         node = node->next;
     }    
 }
@@ -99,7 +99,7 @@ void Simulator::attract(Vector3 pos, double strength)
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->addAcceleration(pos * strength * deltaTime);
+        node->item->addAcceleration(pos * strength);
         node = node->next;
     }
 }

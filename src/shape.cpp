@@ -57,7 +57,7 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
                 this->points[i].setPos(this->points[i].getPos() - (s->getNormal() * distance));
                 double impulse = this->points[i].getVelocity().dot(s->getNormal());
                 this->points[i].addImpulse(s->getNormal() * -impulse * s->getRestitution());
-                Vector3 friction = (this->points[i].getVelocity() - (s->getNormal() * impulse)) * -s->getFriction();
+                Vector3 friction = (this->points[i].getVelocity() - (s->getNormal() * impulse)) * (1 - s->getFriction());
                 this->points[i].addImpulse(friction);
                 
             }  

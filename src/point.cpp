@@ -6,13 +6,13 @@
 #include "spring.h"
 
 Point::Point(const Vector3& pos, double mass):
-    pos(pos), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false)
+    pos(pos), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false), old_deltaT(1)
 {
     
 }
 
 Point::Point():
-    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false)
+    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false), old_deltaT(1)
 {
     
 }
@@ -37,13 +37,15 @@ void Point::applyForce(double deltaT)
 {
     // Verlet integration
     Vector3 temp = this->pos;
-    this->velocity = (this->pos - this->old_pos) * 0.99;
-    this->velocity += this->impulse/this->mass;
+    this->velocity = (this->pos - this->old_pos) / deltaT;
+    this->velocity = this->velocity - this->velocity * (0.5 * deltaT);
+    this->velocity += this->impulse/this->mass * deltaT;
     
-    this->pos += this->velocity;
-    this->pos += (this->impulse/this->mass) * deltaT;
+    this->pos += this->velocity * deltaT;
+    this->pos += (this->impulse/this->mass) * deltaT * deltaT;
     
     this->old_pos = temp;
+    this->old_deltaT = deltaT;
     
     this->impulse = Vector3(0, 0, 0);
 }

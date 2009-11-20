@@ -4,7 +4,7 @@
 #include "opengl.h"
 
 Surface::Surface(const Vector3& p, const Vector3& v1, const Vector3& v2):
-    p(p), v1(v1), v2(v2), restitution(1.0), friction(1)
+    p(p), v1(v1), v2(v2), restitution(0.0), friction(0.8)
 {
     this->normal = v2.cross(v1).normalize();
 }

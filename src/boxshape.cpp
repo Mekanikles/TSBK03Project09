@@ -50,6 +50,10 @@ BoxShape::BoxShape(const Box& box, int resolution):
     
     Vector3 v1 = box.getV1();
     Vector3 v2 = box.getV2();
+    
+    Vector3 midpoint = box.getV1() + (box.getV2() - box.getV1()) * 0.5;
+    double radius = (box.getV2() - box.getV1()).length() / 3;
+    
     double xseg = (v2.getX() - v1.getX()) / (double)this->res;
     double yseg = (v2.getY() - v1.getY()) / (double)this->res;
     double zseg = (v2.getZ() - v1.getZ()) / (double)this->res;
@@ -70,7 +74,13 @@ BoxShape::BoxShape(const Box& box, int resolution):
             double z = v1.getZ();
             while (zcount <= this->res)
             {
-                this->points[pwind] = Point(Vector3(x, y, z));
+                Vector3 pos = Vector3(x, y, z);
+                double plen = (pos - midpoint).length();
+                Vector3 pnorm = (pos - midpoint); pnorm.normalize();
+                if (plen > radius)
+                    pos = midpoint + pnorm * radius;
+                
+                this->points[pwind] = Point(pos);
                 
                 
                 for (int ix = -1; ix < 2; ix++)
