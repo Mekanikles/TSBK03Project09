@@ -15,11 +15,14 @@ public:
     Point();
     
     Vector3 getPos();
-    void setPos(const Vector3& pos);
+    void setPos(const Vector3& new_pos, const Vector3& old_pos);
+    void setPos(const Vector3& new_pos);    
+    
     void addImpulse(Vector3 impulse);
     void applyForce(double deltaT);
     Vector3 getImpulse();
     Vector3 getVelocity();
+    void setVelocity(const Vector3& vel);
     double getMass();
     void Lock(bool set);
     bool isLocked();

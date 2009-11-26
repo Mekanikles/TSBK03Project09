@@ -78,7 +78,7 @@ BoxShape::BoxShape(const Box& box, int resolution):
                 double plen = (pos - midpoint).length();
                 Vector3 pnorm = (pos - midpoint); pnorm.normalize();
                 //if (plen > radius)
-                //    pos = midpoint + pnorm * radius;
+                    //pos = midpoint + pnorm * radius;
                 
                 this->points[pwind] = Point(pos);
                 

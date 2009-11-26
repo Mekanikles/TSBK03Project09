@@ -51,15 +51,35 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
         Vector3 pos = this->points[i].getPos();
         if (s->isPointInsideBounds(pos))
         {
+            // Distance from point to nearest point on plane
             double distance = s->signedDistanceToPoint(pos);
             if (distance < 0.0)
             {
-                this->points[i].setPos(this->points[i].getPos() - (s->getNormal() * distance));
-                double impulse = this->points[i].getVelocity().dot(s->getNormal());
-                this->points[i].addImpulse(s->getNormal() * -impulse * s->getRestitution());
+                // Calc velocity magnitude orthogonal to plane
+                double nvel = this->points[i].getVelocity().dot(s->getNormal());
+            
+                // Calc velocitytangent
+                Vector3 veltan = this->points[i].getVelocity() - s->getNormal() * nvel;
+                
+                // Ratio between nvel and distance
+                double r = distance / nvel;
+                
+                // Calculate new point, disregarding friction
+                Vector3 planepos = this->points[i].getPos() - (s->getNormal() * distance);
+                
+                // Push point to surface and set old pos to intersection
+                // Reduce sliding length with friction.
+                // Move out from surface with restitution factor
+                this->points[i].setPos(planepos - veltan * (r * s->getFriction()) - (s->getNormal() * distance) * s->getRestitution());
+                
+                // Set new velocity, reflected from old with friction and restitution accounted for
+                this->points[i].setVelocity(veltan * (1 - s->getFriction()) - (s->getNormal() * nvel) * s->getRestitution());
+                
+                
+                /*this->points[i].addImpulse(s->getNormal() * -impulse * s->getRestitution());
                 Vector3 friction = (this->points[i].getVelocity() - (s->getNormal() * impulse)) * (1 - s->getFriction());
                 this->points[i].addImpulse(friction);
-                
+                */
             }  
         }
     }

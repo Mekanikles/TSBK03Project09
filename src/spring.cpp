@@ -69,7 +69,7 @@ void Spring::addForces()
     if (intensity < -1.0)
         intensity = -1.0;
 
-    intensity *= this->elasticity * 1000;
+    intensity *= this->elasticity * 400;
    
     relvel = distance * relvel.dot(distance);
     
