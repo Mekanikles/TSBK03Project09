@@ -33,20 +33,25 @@ void Point::addImpulse(Vector3 impulse)
    this->impulse += impulse;
 }
 
-void Point::applyForce(double deltaT)
+void Point::doVerletStep(double deltaT)
 {
-    // Verlet integration
+    // Calculate velocity
     Vector3 temp = this->pos;
     this->velocity = (this->pos - this->old_pos) / deltaT;
     this->velocity = this->velocity - this->velocity * (0.5 * deltaT);
     this->velocity += this->impulse/this->mass * deltaT;
     
+    // Verlet integration
     this->pos += this->velocity * deltaT;
     this->pos += (this->impulse/this->mass) * deltaT * deltaT;
     
     this->old_pos = temp;
     this->old_deltaT = deltaT;
-    
+}
+
+void Point::applyForce(double deltaT)
+{
+    doVerletStep(deltaT);
     this->impulse = Vector3(0, 0, 0);
 }
 

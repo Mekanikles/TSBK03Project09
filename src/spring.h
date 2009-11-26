@@ -22,7 +22,7 @@ private:
     Point* p1;
     Point* p2;
     double elasticity;
-    double length;
+    double inertialLength;
 };  
 
 

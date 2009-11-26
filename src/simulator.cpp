@@ -13,7 +13,7 @@
 Simulator::Simulator(double creationTime)
 {
     fprintf(stderr, "Creating simulator.\n");
-    BoxShape* box = new BoxShape(Box(Vector3(-2, 1.0, -2), Vector3(2, 5.0, 2)), 3);
+    BoxShape* box = new BoxShape(Box(Vector3(-2, 1.0, -2), Vector3(2, 5.0, 2)), 5);
     this->shapes.addFirst(box);
 
     Surface* surface = new Surface(Vector3(-2, 0, -3), Vector3(4, 0, 0), Vector3(0, 0, 6));
@@ -32,6 +32,7 @@ Simulator::Simulator(double creationTime)
     this->surfaces.addFirst(surface);
     
     this->currentTime = creationTime;
+    this->iterations = 0;
 }
 
 Simulator::~Simulator()
@@ -39,19 +40,23 @@ Simulator::~Simulator()
 
 }
 
-void Simulator::tick(double time)
+void Simulator::tick(double dt)
 {
-    deltaTime = time - currentTime;
-    currentTime = time;
+    deltaTime = dt;
     
-    this->addGravity();
+    double timeStep = deltaTime / 2;
+    for (double t = 0; t < deltaTime; t += timeStep)
+    {
+        this->addGravity();
     
-    this->addSpringForces();
+        this->addSpringForces();
 
-    this->applyForces();
+        this->collidePoints();
 
-    this->collidePoints();
-    
+        this->applyForces(timeStep);
+        
+        this->iterations++;
+    }
 }
 
 void Simulator::renderShapes()
@@ -74,12 +79,12 @@ void Simulator::renderSurfaces()
     }            
 }
 
-void Simulator::applyForces()
+void Simulator::applyForces(double deltaT)
 {
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->applyForces(deltaTime);
+        node->item->applyForces(deltaT);
         node = node->next;
     }    
 }

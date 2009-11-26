@@ -42,6 +42,8 @@ protected:
     LinkedList<Spring*> springs;
     
     
+    void doVerletStep(double deltaT);
+    
 private:
 
 

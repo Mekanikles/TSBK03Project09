@@ -11,7 +11,7 @@ Platform* platform;
 const int screenwidth = 640;
 const int screenheight = 480;
 
-const double targetFps = 300;
+const double targetFps = 60;
 
 Simulator* sim;
 Renderer* renderer;
@@ -39,15 +39,15 @@ void handleCamera()
             renderer->tiltCamera(mrely);
 
         if (relx || rely || relz)
-            renderer->moveCamera(Vector3(relx/20, rely/20, relz/20));
+            renderer->moveCamera(Vector3(relx/2, rely/2, relz/2));
     }
     
 }
 
 
-void mainloop(double time)
+void mainloop(double dt)
 {
-    sim->tick(time);
+    sim->tick(dt);
     handleCamera();
     renderer->render(sim);
 }
@@ -82,7 +82,7 @@ int main()
         if (t >= nextFrame)    
         {
             nextFrame += frameLength;
-            mainloop(t);
+            mainloop(frameLength);
 
             fps++;
             if (t - lastFpsCheck > 1.0)
@@ -90,11 +90,14 @@ int main()
                 fprintf(stderr, "FPS: %i\n", fps);
                 lastFpsCheck = t;
                 fps = 0;
+                fprintf(stderr, "Iterations: %i\n", sim->iterations);
+                sim->iterations = 0;
             }
                    
             platform->refreshWindow();
         }
-        //platform->sleep(nextFrame - t);
+        t = platform->getTime();
+        platform->sleep(nextFrame - t);
     }
 
     delete renderer;

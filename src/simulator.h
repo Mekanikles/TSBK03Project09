@@ -12,10 +12,12 @@ public:
     Simulator(double creationTime);
     ~Simulator();
 
-    void tick(double time);
+    void tick(double dt);
     void renderShapes();
     void renderSurfaces();
     void attract(Vector3 pos, double strength);
+        
+    int iterations;
         
 protected:
 private:
@@ -30,7 +32,7 @@ private:
     void collidePoints();
     void addSpringForces();
     
-    void applyForces();
+    void applyForces(double deltaT);
     
 
 };
