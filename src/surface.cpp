@@ -3,8 +3,13 @@
 
 #include "opengl.h"
 
+double Surface::restitution = 0.0;
+double Surface::friction = 1.0;
+    
+
+
 Surface::Surface(const Vector3& p, const Vector3& v1, const Vector3& v2):
-    p(p), v1(v1), v2(v2), restitution(1.0), friction(0.6)
+    p(p), v1(v1), v2(v2)
 {
     this->normal = v2.cross(v1).normalize();
 }
@@ -36,7 +41,16 @@ double Surface::getFriction()
     return friction;
 }
     
+double Surface::setRestitution(double r)
+{
+    restitution = r;
+}
 
+double Surface::setFriction(double f)
+{
+    friction = f;
+}
+    
 bool Surface::isPointInsideBounds(Vector3 point)
 {
     Vector3 pvect = point - this->p;

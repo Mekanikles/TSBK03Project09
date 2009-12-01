@@ -13,16 +13,25 @@ public:
     Point* getPoint1();
     Point* getPoint2();
     
-    void addForces();
+    void addForces(double deltaT);
     void calcInertialLength();
+    
+    static double getElasticity();
+    static double getDampening();
+    static double setElasticity(double e);
+    static double setDampening(double d);
+        
+    
     
 protected:
 private:
     
     Point* p1;
-    Point* p2;
-    double elasticity;
+    Point* p2;    
     double inertialLength;
+    
+    static double elasticity;
+    static double dampening; 
 };  
 
 

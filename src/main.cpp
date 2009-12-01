@@ -3,6 +3,8 @@
 #include "platform.h"
 #include "simulator.h"
 #include "renderer.h"
+#include "surface.h"
+#include "spring.h"
 
 #include "opengl.h"
 
@@ -11,7 +13,8 @@ Platform* platform;
 const int screenwidth = 640;
 const int screenheight = 480;
 
-const double targetFps = 60;
+const double targetFps = 30;
+const double frameLength = 1.0/targetFps;
 
 Simulator* sim;
 Renderer* renderer;
@@ -19,6 +22,8 @@ Renderer* renderer;
 
 void handleCamera()
 {
+    static double size = 2;
+
     double mrelx = platform->getMouseRelX();
     double mrely = platform->getMouseRelY();
 
@@ -42,6 +47,128 @@ void handleCamera()
             renderer->moveCamera(Vector3(relx/2, rely/2, relz/2));
     }
     
+    // Changing size
+    if (platform->getChar('T'))
+    {
+        size+=10*frameLength;
+        if (size > 10.0)
+            size = 10.0;
+            
+        fprintf(stderr, "Shape size: %f\n", size);    
+    }
+    else if (platform->getChar('R'))
+    {
+        size-=10*frameLength;
+        if (size < 1.0)
+            size = 0.5;
+            
+        fprintf(stderr, "Shape size: %f\n", size);    
+    }
+
+    // Changing surface friction
+    if (platform->getChar('G'))
+    {
+        double f = Surface::getFriction();
+        f += 1*frameLength;
+        if (f > 1.0)
+            f = 1.0;
+        Surface::setFriction(f);
+    
+        fprintf(stderr, "Surface friction: %f\n", f);    
+    }
+    else if (platform->getChar('F'))
+    {
+        double f = Surface::getFriction();
+        f -= 1*frameLength;
+        if (f < 0.0)
+            f = 0.0;
+        Surface::setFriction(f);
+    
+        fprintf(stderr, "Surface friction: %f\n", f);    
+    }
+
+    // Changing surface restitution
+    if (platform->getChar('B'))
+    {
+        double r = Surface::getRestitution();
+        r += 1*frameLength;
+        if (r > 1.0)
+            r = 1.0;
+        Surface::setRestitution(r);
+    
+        fprintf(stderr, "Surface restitution: %f\n", r);    
+    }
+    else if (platform->getChar('V'))
+    {
+        double r = Surface::getRestitution();
+        r -= 1*frameLength;
+        if (r < 0.0)
+            r = 0.0;
+        Surface::setRestitution(r);
+    
+        fprintf(stderr, "Surface restitution: %f\n", r);    
+    }
+    
+
+    // Changing spring constant
+    if (platform->getChar('U'))
+    {
+        double e = Spring::getElasticity();
+        e += 500*frameLength;
+        if (e > 1500)
+            e = 1500;
+        Spring::setElasticity(e);
+    
+        fprintf(stderr, "Spring constant: %f\n", e);    
+    }
+    else if (platform->getChar('Y'))
+    {
+        double e = Spring::getElasticity();
+        e -= 500*frameLength;
+        if (e < 100)
+            e = 100;
+        Spring::setElasticity(e);
+    
+        fprintf(stderr, "Spring constant: %f\n", e);    
+    }    
+    
+
+    // Changing spring dampening
+    if (platform->getChar('J'))
+    {
+        double d = Spring::getDampening();
+        d += 100*frameLength;
+        if (d > 500)
+            d = 500;
+        Spring::setDampening(d);
+    
+        fprintf(stderr, "Spring dampening: %f\n", d);    
+    }
+    else if (platform->getChar('H'))
+    {
+        double d = Spring::getDampening();
+        d -= 100*frameLength;
+        if (d < 0)
+            d = 0;
+        Spring::setDampening(d);
+    
+        fprintf(stderr, "Spring dampening: %f\n", d);    
+    }    
+    
+    
+    int digitkey;
+    for (digitkey = 0; digitkey < 10; digitkey++)
+    {
+        if (platform->getChar('0' + (char)digitkey))
+        {
+            break;
+        }
+    }
+    if (digitkey < 10)
+    {
+        sim->resetShape(digitkey, size);
+    }
+
 }
 
 
@@ -72,7 +199,6 @@ int main()
     double t = platform->getTime();
     double lastFpsCheck = platform->getTime();
     double nextFrame = t;
-    double frameLength = 1.0/targetFps;
     int fps = 0;
     while (platform->isRunning())
     {

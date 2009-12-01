@@ -29,7 +29,7 @@ public:
     
     LinkedList<Spring*>* getSpringList();
     void addNeighbor(Point* p, double elasticity = 1.0);
-    void addSpringForces();
+    void addSpringForces(double deltaT);
     void setupSprings();
     
 protected:

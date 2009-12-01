@@ -8,16 +8,19 @@ class BallShape : public Shape
 
 public:
 
-    BallShape(double radius);
+    BallShape(const Vector3& center, const double radius, int resolution = 1);
 
 protected:
 
-    static const int rows = 4;
-    static const int cols = 4;
-    double radius;
+    int res;
+
+    int BallShape::getPointRowIndex(int wind);
+    int BallShape::getPointColIndex(int wind);
+    int BallShape::getPointLayerIndex(int wind);
+    int getPointWindIndex(int row, int col, int layer);    
+    void addNeighbor(Point* p, int row, int col, int layer);
 
 private:
-
 
 
 };

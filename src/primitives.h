@@ -12,12 +12,12 @@ public:
     Vector3(double x, double y, double z);
     Vector3();
     
-    Vector3 operator+(const Vector3& vect);
+    Vector3 operator+(const Vector3& vect) const;
     Vector3& operator+=(const Vector3& vect);
-    Vector3 operator-(const Vector3& vect);
+    Vector3 operator-(const Vector3& vect) const;
     Vector3& operator-=(const Vector3& vect);
-    Vector3 operator*(const double scalar);
-    Vector3 operator/(const double scalar);
+    Vector3 operator*(const double scalar) const;
+    Vector3 operator/(const double scalar) const;
     
     double dot(const Vector3& v) const;
     Vector3 cross(const Vector3& v) const;

@@ -15,7 +15,7 @@ Vector3::Vector3()
     d[2] = 0.0;
 }
     
-Vector3 Vector3::operator+(const Vector3& vect)
+Vector3 Vector3::operator+(const Vector3& vect) const
 {
     return Vector3(this->d[0] + vect.d[0], this->d[1] + vect.d[1], this->d[2] + vect.d[2]);
 }
@@ -28,7 +28,7 @@ Vector3& Vector3::operator+=(const Vector3& vect)
     return *this;
 }
 
-Vector3 Vector3::operator-(const Vector3& vect)
+Vector3 Vector3::operator-(const Vector3& vect) const
 {
     return Vector3(this->d[0] - vect.d[0], this->d[1] - vect.d[1], this->d[2] - vect.d[2]);
 }
@@ -41,12 +41,12 @@ Vector3& Vector3::operator-=(const Vector3& vect)
     return *this;
 }
 
-Vector3 Vector3::operator*(const double scalar)
+Vector3 Vector3::operator*(const double scalar) const
 {
     return Vector3(this->d[0] * scalar, this->d[1] * scalar, this->d[2] * scalar);
 }
 
-Vector3 Vector3::operator/(const double scalar)
+Vector3 Vector3::operator/(const double scalar) const
 {
     return Vector3(this->d[0] / scalar, this->d[1] / scalar, this->d[2] / scalar);
 }

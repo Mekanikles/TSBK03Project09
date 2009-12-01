@@ -15,6 +15,7 @@ public:
     void tick(double dt);
     void renderShapes();
     void renderSurfaces();
+    void resetShape(int id, double size);
     void attract(Vector3 pos, double strength);
         
     int iterations;

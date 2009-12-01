@@ -16,14 +16,15 @@ class Shape
         
         virtual void render();
         void addAcceleration(Vector3 acc);
-        void addSpringForces();
+        void addSpringForces(double deltaT);
         void applyForces(double deltaT);
         void collideWithSurface(Surface* s, double deltaT);
+        
+        virtual ~Shape();        
         
     protected:
     
         Shape(int pointcount);
-        virtual ~Shape();
         
         Point* points;
 

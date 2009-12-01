@@ -97,11 +97,11 @@ void Point::addNeighbor(Point* p, double elasticity)
     this->springs.addFirst(s);
 }
 
-void Point::addSpringForces()
+void Point::addSpringForces(double deltaT)
 {
     for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
     {
-        s->item->addForces();
+        s->item->addForces(deltaT);
     }
 }
 

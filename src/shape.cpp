@@ -28,11 +28,11 @@ void Shape::addAcceleration(Vector3 acc)
     }
 }
 
-void Shape::addSpringForces()
+void Shape::addSpringForces(double deltaT)
 {
     for (int i = 0; i < this->pointcount; i++)
     {
-        this->points[i].addSpringForces();
+        this->points[i].addSpringForces(deltaT);
     }
 }
 
