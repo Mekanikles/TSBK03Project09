@@ -9,8 +9,8 @@
 
 const double tolerance = 0.0005;
 
-double Spring::elasticity = 500;
-double Spring::dampening = 70; 
+double Spring::elasticity = 750;
+double Spring::dampening = 5; 
 
 Spring::Spring(Point* p1, Point* p2, double elasticity):
     p1(p1), p2(p2)
@@ -81,20 +81,20 @@ void Spring::addForces(double deltaT)
     }
     
     double intensity = length - this->inertialLength;
+   /*
+    Vector3 diff = (distance * intensity) * 0.5;
+    p1->setPos(p1->getPos() - diff);
+    p2->setPos(p2->getPos() + diff);
+*/
    
-    // Prevent explosions
-    if (intensity > 1.0)
-        intensity = 1.0;
-        
-    if (intensity < -1.0)
-        intensity = -1.0;
-
+    
     intensity *= this->elasticity;
    
     relvel = distance * relvel.dot(distance);
     Vector3 dampening = relvel * (this->dampening * deltaT);
     
-    //fprintf(stderr, "intensity: %f\n\n", intensity);
+   
     p1->addImpulse(distance * intensity - dampening);
-    //p2->addImpulse(distance * intensity - relvel * 0.1);
+    
+    
 }

@@ -24,7 +24,7 @@ void Shape::addAcceleration(Vector3 acc)
 {
     for (int i = 0; i < this->pointcount; i++)
     {
-        this->points[i].addImpulse(acc);
+        this->points[i].addImpulse(acc * this->points[i].getMass());
     }
 }
 
@@ -55,31 +55,20 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
             double distance = s->signedDistanceToPoint(pos);
             if (distance < 0.0)
             {
-                // Calc velocity magnitude orthogonal to plane
-                double nvel = this->points[i].getVelocity().dot(s->getNormal());
-            
-                // Calc velocitytangent
-                Vector3 veltan = this->points[i].getVelocity() - s->getNormal() * nvel;
+                Vector3 vel = this->points[i].getVelocity();
+                Vector3 normvel = s->getNormal() * vel.dot(s->getNormal());
+                Vector3 veltan = vel - normvel;
                 
-                // Ratio between nvel and distance
-                double r = distance / nvel;
+                double r = -distance / normvel.length();
                 
-                // Calculate new point, disregarding friction
-                Vector3 planepos = this->points[i].getPos() - (s->getNormal() * distance);
+                Vector3 intersection = this->points[i].getPos() - vel * r;
+                Vector3 pos = this->points[i].getPos();
                 
-                // Push point to surface and set old pos to intersection
-                // Reduce sliding length with friction.
-                // Move out from surface with restitution factor
-                this->points[i].setPos(planepos - veltan * (r * s->getFriction()) - (s->getNormal() * distance) * s->getRestitution());
-                
-                // Set new velocity, reflected from old with friction and restitution accounted for
-                this->points[i].setVelocity(veltan * (1 - s->getFriction()) - (s->getNormal() * nvel) * s->getRestitution());
-                
-                
-                /*this->points[i].addImpulse(s->getNormal() * -impulse * s->getRestitution());
-                Vector3 friction = (this->points[i].getVelocity() - (s->getNormal() * impulse)) * (1 - s->getFriction());
-                this->points[i].addImpulse(friction);
-                */
+                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
+                                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
+                //this->points[i].setVelocity(normvel * -s->getRestitution() + veltan * (1 - s->getFriction()));
+                //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
+                //this->points[i].setVelocity(Vector3(0,0,0));
             }  
         }
     }

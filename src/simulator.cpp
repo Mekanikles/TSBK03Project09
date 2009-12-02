@@ -160,7 +160,7 @@ void Simulator::addGravity()
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->addAcceleration(Vector3(0,-9.81 * 3, 0));
+        node->item->addAcceleration(Vector3(0,-9.81, 0));
         node = node->next;
     }    
 }

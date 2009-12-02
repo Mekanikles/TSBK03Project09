@@ -25,7 +25,7 @@ Vector3 Point::getPos()
 void Point::setPos(const Vector3& new_pos)
 {
     this->pos = new_pos;
-    this->old_pos = new_pos;
+    //this->old_pos = new_pos;
 }
 
 void Point::setPos(const Vector3& new_pos, const Vector3& old_pos)
@@ -43,13 +43,20 @@ void Point::doVerletStep(double deltaT)
 {
     // Calculate velocity
     Vector3 temp = this->pos;
+    
+    /*
     //this->velocity = (this->pos - this->old_pos) / deltaT;
     this->velocity = this->velocity - this->velocity * (0.5 * deltaT);
-    this->velocity += this->impulse/this->mass * deltaT;
+    this->velocity += (this->impulse/this->mass) * deltaT;
     
     // Verlet integration
     this->pos += this->velocity * deltaT;
     this->pos += (this->impulse/this->mass) * deltaT * deltaT;
+    */
+    
+   
+    double f = 0.5 * deltaT;
+    this->pos = this->pos*(2-f) - this->old_pos*(1-f) + this->impulse/this->mass * deltaT * deltaT;
     
     this->old_pos = temp;
     this->old_deltaT = deltaT;
@@ -68,7 +75,7 @@ Vector3 Point::getImpulse()
 
 Vector3 Point::getVelocity()
 {   
-    return this->velocity; //this->pos - this->old_pos;
+    return this->pos - this->old_pos;
 }
 
 void Point::setVelocity(const Vector3& vel)

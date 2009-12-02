@@ -223,7 +223,7 @@ int main()
             platform->refreshWindow();
         }
         t = platform->getTime();
-        platform->sleep(nextFrame - t);
+        //platform->sleep(nextFrame - t);
     }
 
     delete renderer;

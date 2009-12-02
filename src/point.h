@@ -11,7 +11,7 @@ class Point
 
 
 public:
-    Point(const Vector3& pos, double mass = 1.0);
+    Point(const Vector3& pos, double mass = 1);
     Point();
     
     Vector3 getPos();
