@@ -20,6 +20,24 @@ Shape::~Shape()
     delete[] points;
 }
 
+
+void Shape::addSpring(Point* p1, Point* p2)
+{
+    //fprintf(stderr, "Adding spring between %p\n", p1);
+    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
+    {
+        //fprintf(stderr, "New point: %p, compare to existing spring( %p, %p)\n", p, s->item->getPoint1(), s->item->getPoint2());
+    
+        if (s->item->getPoint1() == p1 && s->item->getPoint2() == p2)
+            return;
+            
+        if (s->item->getPoint1() == p2 && s->item->getPoint2() == p1)
+            return;
+    }
+    Spring* s = new Spring(p1, p2);
+    this->springs.addFirst(s);
+}
+
 void Shape::addAcceleration(Vector3 acc)
 {
     for (int i = 0; i < this->pointcount; i++)
@@ -30,10 +48,31 @@ void Shape::addAcceleration(Vector3 acc)
 
 void Shape::addSpringForces(double deltaT)
 {
-    for (int i = 0; i < this->pointcount; i++)
+    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
     {
-        this->points[i].addSpringForces(deltaT);
+        s->item->addForces(deltaT);
     }
+}
+
+void Shape::resolveRigidConstraints(double deltaT)
+{
+    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
+    {
+        s->item->resolveRigidConstraints(deltaT);
+    }
+}
+
+void Shape::setupSprings()
+{
+    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
+    {
+        s->item->calcInertialLength();
+    }
+}
+
+LinkedList<Spring*>* Shape::getSpringList()
+{
+    return &this->springs;
 }
 
 void Shape::applyForces(double deltaT)
@@ -64,8 +103,11 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
                 Vector3 intersection = this->points[i].getPos() - vel * r;
                 Vector3 pos = this->points[i].getPos();
                 
-                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
-                                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
+                this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
+                
+                //this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
+                //                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
+                
                 //this->points[i].setVelocity(normvel * -s->getRestitution() + veltan * (1 - s->getFriction()));
                 //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
                 //this->points[i].setVelocity(Vector3(0,0,0));
@@ -89,19 +131,21 @@ void Shape::render()
             glVertex3d(pos.getX(), pos.getY(), pos.getZ());
         }
         glEnd();        
-        
-        LinkedList<Spring*>* springs = this->points[i].getSpringList();
-        glBegin(GL_LINES);
-        {
-            for (Node<Spring*>* s = springs->getFirst(); s != NULL; s = s->next)
-            {
-                pos2 = pos - s->item->getPoint2()->getPos();
-                pos2 = pos - pos2 * 0.5;
-                glVertex3d(pos.getX(), pos.getY(), pos.getZ());
-                glVertex3d(pos2.getX(), pos2.getY(), pos2.getZ());            
-            }
-        }   
-        glEnd();
-        
     }
+
+    LinkedList<Spring*>* springs = this->getSpringList();
+    glBegin(GL_LINES);
+    {
+        for (Node<Spring*>* s = springs->getFirst(); s != NULL; s = s->next)
+        {
+            pos = s->item->getPoint1()->getPos();
+            pos2 = s->item->getPoint2()->getPos();
+            
+            glVertex3d(pos.getX(), pos.getY(), pos.getZ());
+            glVertex3d(pos2.getX(), pos2.getY(), pos2.getZ());            
+        }
+    }   
+    glEnd();
+    
+    
 }

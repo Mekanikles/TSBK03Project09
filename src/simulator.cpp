@@ -113,8 +113,13 @@ void Simulator::tick(double dt)
     double timeStep = deltaTime / 4;
     for (double t = 0; t < deltaTime; t += timeStep)
     {
+        for (int i = 0; i < 20; i++)
+        {
+            this->resolveRigidConstraints();
+        }
+        
         this->addGravity();
-    
+        
         this->addSpringForces();
 
         this->applyForces(timeStep);
@@ -160,7 +165,7 @@ void Simulator::addGravity()
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
-        node->item->addAcceleration(Vector3(0,-9.81, 0));
+        node->item->addAcceleration(Vector3(0,-9.81 * 3, 0));
         node = node->next;
     }    
 }
@@ -173,6 +178,16 @@ void Simulator::attract(Vector3 pos, double strength)
         node->item->addAcceleration(pos * strength);
         node = node->next;
     }
+}
+
+void Simulator::resolveRigidConstraints()
+{
+    Node<Shape*>* node = this->shapes.getFirst();
+    while (node != NULL)
+    {
+        node->item->resolveRigidConstraints(deltaTime);
+        node = node->next;
+    }    
 }
 
 void Simulator::addSpringForces()

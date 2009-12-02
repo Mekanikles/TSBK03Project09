@@ -114,9 +114,9 @@ void handleCamera()
     if (platform->getChar('U'))
     {
         double e = Spring::getElasticity();
-        e += 500*frameLength;
-        if (e > 1500)
-            e = 1500;
+        e += 1000*frameLength;
+        if (e > 3000)
+            e = 3000;
         Spring::setElasticity(e);
     
         fprintf(stderr, "Spring constant: %f\n", e);    
@@ -124,9 +124,9 @@ void handleCamera()
     else if (platform->getChar('Y'))
     {
         double e = Spring::getElasticity();
-        e -= 500*frameLength;
-        if (e < 100)
-            e = 100;
+        e -= 1000*frameLength;
+        if (e < 10)
+            e = 10;
         Spring::setElasticity(e);
     
         fprintf(stderr, "Spring constant: %f\n", e);    

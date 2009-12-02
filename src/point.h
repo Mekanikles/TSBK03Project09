@@ -18,8 +18,10 @@ public:
     void setPos(const Vector3& new_pos, const Vector3& old_pos);
     void setPos(const Vector3& new_pos);    
     
+    void displace(Vector3 d);
     void addImpulse(Vector3 impulse);
     void applyForce(double deltaT);
+    
     Vector3 getImpulse();
     Vector3 getVelocity();
     void setVelocity(const Vector3& vel);
@@ -27,10 +29,6 @@ public:
     void Lock(bool set);
     bool isLocked();
     
-    LinkedList<Spring*>* getSpringList();
-    void addNeighbor(Point* p, double elasticity = 1.0);
-    void addSpringForces(double deltaT);
-    void setupSprings();
     
 protected:
 
@@ -39,12 +37,10 @@ protected:
     double mass;
     Vector3 velocity;
     Vector3 impulse;
+    Vector3 displacement;
     bool locked;
     double old_deltaT;
-    
-    LinkedList<Spring*> springs;
-    
-    
+        
     void doVerletStep(double deltaT);
     
 private:

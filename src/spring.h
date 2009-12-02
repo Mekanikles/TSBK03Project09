@@ -14,6 +14,8 @@ public:
     Point* getPoint2();
     
     void addForces(double deltaT);
+    void resolveRigidConstraints(double deltaT);
+    
     void calcInertialLength();
     
     static double getElasticity();

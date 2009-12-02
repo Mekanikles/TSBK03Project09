@@ -4,7 +4,7 @@ HOMEPATH=../..
 SRCPATH=$(HOMEPATH)/src
 EXEPATH=$(HOMEPATH)/bin/project.exe
 
-CFLAGS=-mno-cygwin -o2 #-g -Wall
+CFLAGS=-mno-cygwin -g -Wall
 CFLAGS+= -I$(GLFWPATH)/include
 LFLAGS=-L$(GLFWPATH)/lib/win32 -lglfw -lopengl32 -lglu32
 

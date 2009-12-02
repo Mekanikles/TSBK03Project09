@@ -41,7 +41,7 @@ void BallShape::addNeighbor(Point* p, int row, int col, int layer)
     if (col >= (360 / this->res))
         col = col - (360 / this->res);
             
-    p->addNeighbor(&this->points[getPointWindIndex(row, col, layer)]);
+    this->addSpring(p, &this->points[getPointWindIndex(row, col, layer)]);
 }
 
 BallShape::BallShape(const Vector3& center, const double radius, int resolution):
@@ -55,15 +55,11 @@ BallShape::BallShape(const Vector3& center, const double radius, int resolution)
     
     // near end
     this->points[1] = Point(center + Vector3(0, 0, radius));
-    this->points[0].addNeighbor(&this->points[1]); 
-    this->points[1].addNeighbor(&this->points[0]); 
+    this->addSpring(&this->points[0], &this->points[1]);
     
     // far end
     this->points[2] = Point(center + Vector3(0, 0, -radius));
-    this->points[0].addNeighbor(&this->points[2]); 
-    this->points[2].addNeighbor(&this->points[0]); 
-    
-    
+    this->addSpring(&this->points[0], &this->points[2]);   
     
     double i;
     double j;
@@ -85,8 +81,7 @@ BallShape::BallShape(const Vector3& center, const double radius, int resolution)
                                                 radius * cos(a) * sin(b),
                                                 radius * cos(b)) + midpoint);
             // Connect to center vertex
-            this->points[0].addNeighbor(&this->points[pwind]); 
-            this->points[pwind].addNeighbor(&this->points[0]); 
+            this->addSpring(&this->points[0], &this->points[pwind]);
             
             addNeighbor(&this->points[pwind], row - 1, col - 1, 0);
             addNeighbor(&this->points[pwind], row, col - 1, 0);
@@ -104,21 +99,16 @@ BallShape::BallShape(const Vector3& center, const double radius, int resolution)
             row++;
         }
         // Bind to near vertex
-        this->points[1].addNeighbor(&this->points[pwind - (180/res) + 1]);
-        this->points[pwind  - (180/res) + 1].addNeighbor(&this->points[1]);
+        this->addSpring(&this->points[1], &this->points[pwind - (180/res) + 1]);
         
         // Bind to far vertex
-        this->points[2].addNeighbor(&this->points[pwind-1]);
-        this->points[pwind-1].addNeighbor(&this->points[2]);
+        this->addSpring(&this->points[2], &this->points[pwind-1]);
         
         col++;
     }
     
     fprintf(stderr, "pwind: %i, pcount: %i\n", pwind, pointcount);  
   
-    for (int i = 0; i < pwind; i++)
-    {
-        this->points[i].setupSprings();
-    }
-      
+    setupSprings();
+
 }

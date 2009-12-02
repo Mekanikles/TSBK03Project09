@@ -40,7 +40,7 @@ void BoxShape::addNeighbor(Point* p, int x, int y, int z)
     if (x < 0 || x > this->res || y < 0 || y > this->res || z < 0 || z > this->res)
         return;
 
-    p->addNeighbor(&this->points[getPointWindIndex(x, y, z)]);
+    this->addSpring(p, &this->points[getPointWindIndex(x, y, z)]);
     
 }
 
@@ -110,10 +110,8 @@ BoxShape::BoxShape(const Box& box, int resolution):
    
     fprintf(stderr, "pwind: %i, pcount: %i\n", pwind, pointcount);
  
-    for (int i = 0; i < pwind; i++)
-    {
-        this->points[i].setupSprings();
-    }
+    setupSprings();
+    
     
    
     

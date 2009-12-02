@@ -32,6 +32,7 @@ private:
     void addGravity();
     void collidePoints();
     void addSpringForces();
+    void resolveRigidConstraints();
     
     void applyForces(double deltaT);
     

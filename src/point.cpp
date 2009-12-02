@@ -1,18 +1,19 @@
 #include "point.h"
 
-#include  "stdlib.h"
+#include "stdlib.h"
+#include "stdio.h"
 
 #include "primitives.h"
 #include "spring.h"
 
 Point::Point(const Vector3& pos, double mass):
-    pos(pos), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false), old_deltaT(1)
+    pos(pos), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)),displacement(Vector3(0,0,0)), locked(false), old_deltaT(1)
 {
     
 }
 
 Point::Point():
-    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), locked(false), old_deltaT(1)
+    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), displacement(Vector3(0,0,0)), locked(false), old_deltaT(1)
 {
     
 }
@@ -39,11 +40,17 @@ void Point::addImpulse(Vector3 impulse)
    this->impulse += impulse;
 }
 
+void Point::displace(Vector3 d)
+{
+    this->pos += d;
+}
+
 void Point::doVerletStep(double deltaT)
 {
     // Calculate velocity
     Vector3 temp = this->pos;
-    
+   
+   
     /*
     //this->velocity = (this->pos - this->old_pos) / deltaT;
     this->velocity = this->velocity - this->velocity * (0.5 * deltaT);
@@ -96,31 +103,4 @@ void Point::Lock(bool set)
 bool Point::isLocked()
 {
     return this->locked;
-}
-
-void Point::addNeighbor(Point* p, double elasticity)
-{
-    Spring* s = new Spring(this, p, elasticity);
-    this->springs.addFirst(s);
-}
-
-void Point::addSpringForces(double deltaT)
-{
-    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
-    {
-        s->item->addForces(deltaT);
-    }
-}
-
-void Point::setupSprings()
-{
-    for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
-    {
-        s->item->calcInertialLength();
-    }
-}
-
-LinkedList<Spring*>* Point::getSpringList()
-{
-    return &this->springs;
 }
