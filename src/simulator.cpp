@@ -98,9 +98,7 @@ void Simulator::resetShape(int id, double size)
          
         default:  
         {  
-            fprintf(stderr, "Creating 1x1 box\n");
-            BoxShape* box = new BoxShape(Box(Vector3(-2, size, -2), Vector3(2, size*2, 2)), 1);
-            this->shapes.addFirst(box); 
+            fprintf(stderr, "Clearing shapes\n");
             break;
         }
     };
@@ -112,21 +110,20 @@ void Simulator::tick(double dt)
     
     double timeStep = deltaTime / 4;
     for (double t = 0; t < deltaTime; t += timeStep)
-    {
-        for (int i = 0; i < 20; i++)
-        {
-            this->resolveRigidConstraints();
-        }
-        
+    {        
         this->addGravity();
         
         this->addSpringForces();
 
         this->applyForces(timeStep);
 
-        this->collidePoints();
+                
+        for (int i = 0; i < 20; i++)
+        {
+            this->resolveRigidConstraints();
+            this->collidePoints();
+        }    
         
-        this->iterations++;
     }
 }
 

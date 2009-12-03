@@ -1,6 +1,8 @@
 #ifndef PROJECT_SPRING_H
 #define PROJECT_SPRING_H
 
+#include "primitives.h"
+
 class Point;
 
 class Spring
@@ -20,20 +22,28 @@ public:
     
     static double getElasticity();
     static double getDampening();
-    static double setElasticity(double e);
-    static double setDampening(double d);
+    static void setElasticity(double e);
+    static void setDampening(double d);
         
+    static double getMaxlength();
+    static double getMinlength();
+    static void setMaxlength(double max);
+    static void setMinlength(double min);
     
     
 protected:
 private:
     
     Point* p1;
-    Point* p2;    
+    Point* p2;
+    Vector3 old_dist;
     double inertialLength;
     
     static double elasticity;
     static double dampening; 
+    static double maxlength;
+    static double minlength;
+    
 };  
 
 

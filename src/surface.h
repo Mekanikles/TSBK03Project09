@@ -16,8 +16,8 @@ public:
     Vector3 getNormal() const;
     static double getRestitution();
     static double getFriction();
-    static double setRestitution(double r);
-    static double setFriction(double f);
+    static void setRestitution(double r);
+    static void setFriction(double f);
     
     bool isPointInsideBounds(Vector3 point);
     double signedDistanceToPoint(Vector3 point);

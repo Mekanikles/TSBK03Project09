@@ -41,12 +41,12 @@ double Surface::getFriction()
     return friction;
 }
     
-double Surface::setRestitution(double r)
+void Surface::setRestitution(double r)
 {
     restitution = r;
 }
 
-double Surface::setFriction(double f)
+void Surface::setFriction(double f)
 {
     friction = f;
 }

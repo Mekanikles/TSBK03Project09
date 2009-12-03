@@ -88,25 +88,46 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
     for (int i = 0; i < this->pointcount; i++)
     {
         Vector3 pos = this->points[i].getPos();
-        if (s->isPointInsideBounds(pos))
-        {
-            // Distance from point to nearest point on plane
-            double distance = s->signedDistanceToPoint(pos);
-            if (distance < 0.0)
-            {
+        
+        // Distance from point to nearest point on plane
+        double distance = s->signedDistanceToPoint(pos);
+            
+        // If distance is negative, point is behind plane
+        if (distance < 0.0)
+        {        
+            // Check if point is within surface bounds
+            if (s->isPointInsideBounds(pos))
+            {       
+                // Point velocity
                 Vector3 vel = this->points[i].getVelocity();
+                // Velocity along surface normal
                 Vector3 normvel = s->getNormal() * vel.dot(s->getNormal());
+                // Velocity along surface plane
                 Vector3 veltan = vel - normvel;
                 
+                // Ratio of velocity that intersects the plane
                 double r = -distance / normvel.length();
                 
-                Vector3 intersection = this->points[i].getPos() - vel * r;
-                Vector3 pos = this->points[i].getPos();
+                Vector3 intersection;
+                // Make sure ratio isn't too big
+                if (r > 10000.0)
+                {
+                    intersection = this->points[i].getPos() - s->getNormal() * distance - veltan;
+                    r = 1.0;
+                }
+                else
+                {
+                    // Calculate intersection point from ratio
+                    intersection = this->points[i].getPos() - s->getNormal() * distance - veltan * r;
+                }
                 
-                this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
+                //Vector3 pos = this->points[i].getPos();
+                //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
                 
-                //this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
-                //                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
+                // Move to intersecion point. Conserve velocity accounting for friciton and restitution.
+                // Since verlets are used, new velocity are forced by explicitly setting the old position
+                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
+                                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
                 
                 //this->points[i].setVelocity(normvel * -s->getRestitution() + veltan * (1 - s->getFriction()));
                 //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    

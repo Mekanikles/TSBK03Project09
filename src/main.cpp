@@ -155,6 +155,52 @@ void handleCamera()
         fprintf(stderr, "Spring dampening: %f\n", d);    
     }    
     
+    // Changing spring maxlength
+    if (platform->getChar('O'))
+    {
+        double l = Spring::getMaxlength();
+        l += 1*frameLength;
+        if (l > 1.5)
+            l = 1.5;
+        Spring::setMaxlength(l);
+    
+        fprintf(stderr, "Spring maxlength: %f\n", l);
+    }
+    else if (platform->getChar('I'))
+    {
+        double l = Spring::getMaxlength();
+        l -= 1*frameLength;
+        if (l < 1)
+            l = 1;
+        Spring::setMaxlength(l);
+    
+        fprintf(stderr, "Spring maxlength: %f\n", l);
+    }    
+    
+
+    // Changing spring minlength
+    if (platform->getChar('L'))
+    {
+        double l = Spring::getMinlength();
+        l += 1*frameLength;
+        if (l > 1)
+            l = 1;
+        Spring::setMinlength(l);
+    
+        fprintf(stderr, "Spring minlength: %f\n", l);
+    }
+    else if (platform->getChar('K'))
+    {
+        double l = Spring::getMinlength();
+        l -= 1*frameLength;
+        if (l < 0.5)
+            l = 0.5;
+        Spring::setMinlength(l);
+    
+        fprintf(stderr, "Spring minlength: %f\n", l);
+    }    
+            
+    
     
     int digitkey;
     for (digitkey = 0; digitkey < 10; digitkey++)
