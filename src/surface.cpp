@@ -6,7 +6,9 @@
 double Surface::restitution = 0.0;
 double Surface::friction = 1.0;
     
-
+Surface::Surface()
+{
+}
 
 Surface::Surface(const Vector3& p, const Vector3& v1, const Vector3& v2):
     p(p), v1(v1), v2(v2)
@@ -54,15 +56,10 @@ void Surface::setFriction(double f)
 bool Surface::isPointInsideBounds(Vector3 point)
 {
     Vector3 pvect = point - this->p;
-    Vector3 nv1 = v1;
-    Vector3 nv2 = v2;
-    double d1 = pvect.dot(nv1.normalize());
-    double d2 = pvect.dot(nv2.normalize());
+    double d1 = pvect.dot(v1) / this->v1.dot(this->v1);
+    double d2 = pvect.dot(v2) / this->v2.dot(this->v2);
  
-    if (d1 > v1.length() || d1 < 0.0f)
-        return false;
-                
-    if (d2 > v2.length() || d2 < 0.0f)
+    if (d1 < 0.0 || d2 < 0.0 || (d1 + d2 > 1))
         return false;
 
     return true;
@@ -82,12 +79,11 @@ void Surface::render()
     Vector3 p3 = this->p + this->v2;
     Vector3 p4 = this->p + this->v1 + this->v2;
 
-    glBegin(GL_QUADS);
+    glBegin(GL_TRIANGLES);
     {
         glVertex3d(p1.getX(), p1.getY(), p1.getZ());
-        glVertex3d(p2.getX(), p2.getY(), p2.getZ());
-        glVertex3d(p4.getX(), p4.getY(), p4.getZ());
         glVertex3d(p3.getX(), p3.getY(), p3.getZ());
+        glVertex3d(p2.getX(), p2.getY(), p2.getZ());
     }
     glEnd();
     

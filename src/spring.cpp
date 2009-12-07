@@ -59,6 +59,7 @@ void Spring::setMinlength(double min)
 {
     minlength = min;
 }
+
            
 Point* Spring::getPoint1()
 {
@@ -127,22 +128,24 @@ static bool intersectSegmentCircle(Vector3 p, Vector3 v, Vector3 c, double r, Ve
     return true;
 }
 
-void Spring::resolveRigidConstraints(double deltaT)
+bool Spring::resolveRigidConstraints(double deltaT)
 {    
     Vector3 distance = p2->getPos() - p1->getPos();
     
     double length = distance.length();
     double intensity = length - this->inertialLength;
     
-    if ((distance - old_dist).length() < tolerance)//(fabs(intensity) < tolerance)
+    if ((distance - old_dist).length() < 0.05*this->inertialLength)//(fabs(intensity) < tolerance)
     {
         //this->old_dist = p2->getPos() - p1->getPos();
-        return;
+        //fprintf(stderr, "lol\n");
+        return true;
     }    
-    
+
     Vector3 goal = distance;
 
     double r = length / this->inertialLength;
+
     
     if (r > this->maxlength)
     { 
@@ -151,15 +154,16 @@ void Spring::resolveRigidConstraints(double deltaT)
     }
     else if (r < this->minlength)
     {
-        if (intersectSegmentCircle(old_dist, distance - old_dist, Vector3(0,0,0), this->inertialLength * minlength * 0.5, &goal))
+        /*if (intersectSegmentCircle(old_dist, distance - old_dist, Vector3(0,0,0), this->inertialLength * minlength * 1, &goal))
         {   
-            fprintf(stderr, "flag!\n");
+            //fprintf(stderr, "flag!\n");
             Vector3 diff = ((distance - goal) * 0.5);
             p1->displace(diff);
             p2->displace(diff * -1);
             return;
         }
         else
+        */
         {
             Vector3 distnorm = distance; distnorm.normalize();
             goal = distnorm * (this->inertialLength * this->minlength);
@@ -168,12 +172,14 @@ void Spring::resolveRigidConstraints(double deltaT)
     else
     {
         this->old_dist = p2->getPos() - p1->getPos();
+        return true;
     }
 
     Vector3 diff = ((distance - goal) * 0.5);
     p1->displace(diff);
     p2->displace(diff * -1);        
     this->old_dist = p2->getPos() - p1->getPos();
+    return false;
 }
 
 void Spring::addForces(double deltaT)

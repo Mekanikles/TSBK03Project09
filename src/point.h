@@ -26,7 +26,7 @@ public:
     Vector3 getVelocity();
     void setVelocity(const Vector3& vel);
     double getMass();
-    void Lock(bool set);
+    void lock(bool set);
     bool isLocked();
     
     

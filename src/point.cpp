@@ -42,7 +42,10 @@ void Point::addImpulse(Vector3 impulse)
 
 void Point::displace(Vector3 d)
 {
-    this->pos += d;
+    if (!this->locked)
+    {
+        this->pos += d;
+    }
 }
 
 void Point::doVerletStep(double deltaT)
@@ -61,9 +64,11 @@ void Point::doVerletStep(double deltaT)
     this->pos += (this->impulse/this->mass) * deltaT * deltaT;
     */
     
-   
-    double f = 0.5 * deltaT;
-    this->pos = this->pos*(2-f) - this->old_pos*(1-f) + this->impulse/this->mass * deltaT * deltaT;
+    if (!this->locked)
+    {
+        double f = 0.2 * deltaT;
+        this->pos = this->pos*(2-f) - this->old_pos*(1-f) + this->impulse/this->mass * deltaT * deltaT;
+    }
     
     this->old_pos = temp;
     this->old_deltaT = deltaT;
@@ -95,7 +100,7 @@ double Point::getMass()
     return this->mass;
 }
 
-void Point::Lock(bool set)
+void Point::lock(bool set)
 {
     this->locked = set;
 }

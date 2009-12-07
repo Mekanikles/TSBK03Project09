@@ -45,14 +45,14 @@ void BallShape::addNeighbor(Point* p, int row, int col, int layer)
 }
 
 BallShape::BallShape(const Vector3& center, const double radius, int resolution):
-    Shape( 3 + (360 / resolution) * ((180 / resolution)-1)), res(resolution)
+    Shape(3 + (360 / resolution) * ((180 / resolution)-1)), res(resolution)
 {
     fprintf(stderr, "Creating box shape.\n");
     int pwind = 0;
 
     // center vertex
     this->points[0] = Point(center);
-    
+
     // near end
     this->points[1] = Point(center + Vector3(0, 0, radius));
     this->addSpring(&this->points[0], &this->points[1]);

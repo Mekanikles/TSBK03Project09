@@ -109,10 +109,7 @@ BoxShape::BoxShape(const Box& box, int resolution):
     }
    
     fprintf(stderr, "pwind: %i, pcount: %i\n", pwind, pointcount);
- 
+
     setupSprings();
-    
-    
-   
     
 }

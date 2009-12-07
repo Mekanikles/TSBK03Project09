@@ -8,6 +8,7 @@ class Surface
 
 public:
 
+    Surface();
     Surface(const Vector3& p, const Vector3& v1, const Vector3& v2);
 
     Vector3 getP() const;

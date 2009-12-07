@@ -54,12 +54,14 @@ void Shape::addSpringForces(double deltaT)
     }
 }
 
-void Shape::resolveRigidConstraints(double deltaT)
+bool Shape::resolveRigidConstraints(double deltaT)
 {
+    bool retval = true;
     for (Node<Spring*>* s = this->springs.getFirst(); s != NULL; s = s->next)
     {
-        s->item->resolveRigidConstraints(deltaT);
+        retval &= s->item->resolveRigidConstraints(deltaT);
     }
+    return retval;
 }
 
 void Shape::setupSprings()
@@ -83,11 +85,37 @@ void Shape::applyForces(double deltaT)
     }
 }
 
-void Shape::collideWithSurface(Surface* s, double deltaT)
+void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
 {
+    
     for (int i = 0; i < this->pointcount; i++)
     {
+    
+        //for (int b = 0; b < 10*10*2; b++)
+        {
         Vector3 pos = this->points[i].getPos();
+    
+        int x = (int)((pos.getX() + 50 - 5) / 10);
+        int z = (int)((pos.getZ() + 50 - 5) / 10);
+        if (x > 9)
+            x = 9;
+        if (x < 0) 
+            x = 0;
+        if (z > 9)
+            z = 9;
+        if (z < 0) 
+            z = 0;
+    
+    
+        
+    
+        int k = 1;
+        if ((pos.getX() + 50 - 5 - (double)x * 10) + (pos.getZ() + 50 - 5 - (double)z * 10) <= 10)
+            k = 0;
+        
+       
+        Surface* s = &map[z * 10 * 2 + x * 2 + k];
+        //Surface* s = &map[b];
         
         // Distance from point to nearest point on plane
         double distance = s->signedDistanceToPoint(pos);
@@ -95,9 +123,14 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
         // If distance is negative, point is behind plane
         if (distance < 0.0)
         {        
+
+            //fprintf(stderr, "distance: %f x:%i, z:%i, posx:%f, posz:%f, surfP(%f, %f, %f), surfV1(%f, %f, %f), surfV2(%f, %f, %f)\n\n", distance, x, z, pos.getX(), pos.getZ(), s->getP().getX(), s->getP().getY(), s->getP().getZ(), s->getV1().getX(), s->getV1().getY(), s->getV1().getZ(), s->getV2().getX(), s->getV2().getY(), s->getV2().getZ());  
+            //fprintf(stderr, "K: %i\n", k);
             // Check if point is within surface bounds
-            if (s->isPointInsideBounds(pos))
-            {       
+            //if (s->isPointInsideBounds(pos))
+            {
+
+     
                 // Point velocity
                 Vector3 vel = this->points[i].getVelocity();
                 // Velocity along surface normal
@@ -121,18 +154,19 @@ void Shape::collideWithSurface(Surface* s, double deltaT)
                     intersection = this->points[i].getPos() - s->getNormal() * distance - veltan * r;
                 }
                 
-                //Vector3 pos = this->points[i].getPos();
-                //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
+                Vector3 pos = this->points[i].getPos();
+                this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
                 
                 // Move to intersecion point. Conserve velocity accounting for friciton and restitution.
                 // Since verlets are used, new velocity are forced by explicitly setting the old position
-                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
-                                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
+                //this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
+                                        //intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
                 
                 //this->points[i].setVelocity(normvel * -s->getRestitution() + veltan * (1 - s->getFriction()));
                 //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
                 //this->points[i].setVelocity(Vector3(0,0,0));
             }  
+        }
         }
     }
 }

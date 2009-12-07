@@ -13,7 +13,7 @@ class BoxShape : public Shape
 public:
 
     BoxShape(const Box& box, int resolution = 1);
-
+    
 protected:
 
     int res;

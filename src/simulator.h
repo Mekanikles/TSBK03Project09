@@ -5,6 +5,9 @@
 #include "shape.h"
 #include "surface.h"
 
+#define MAPSIZEX 10
+#define MAPSIZEY 10
+
 class Simulator
 {
 public:      
@@ -19,23 +22,27 @@ public:
     void attract(Vector3 pos, double strength);
         
     int iterations;
+    
+    void setRigidSprings(bool enable);
         
 protected:
 private:
     
     LinkedList<Shape*> shapes;
     LinkedList<Surface*> surfaces;
+    Surface surfacemap[MAPSIZEX * MAPSIZEY *2];
     
     double currentTime;
     double deltaTime;
-        
+
+    bool rigidSprings;
+         
     void addGravity();
     void collidePoints();
     void addSpringForces();
-    void resolveRigidConstraints();
+    bool resolveRigidConstraints();
     
     void applyForces(double deltaT);
-    
 
 };
 

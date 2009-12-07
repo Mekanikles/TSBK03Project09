@@ -17,7 +17,7 @@ class Shape
         virtual void render();
         void addAcceleration(Vector3 acc);
         void applyForces(double deltaT);
-        void collideWithSurface(Surface* s, double deltaT);
+        void collideWithSurfaceMap(Surface* map, double deltaT);
         
         virtual ~Shape();    
 
@@ -25,7 +25,7 @@ class Shape
         LinkedList<Spring*>* getSpringList();
         void addSpring(Point* p1, Point* p2);
         void addSpringForces(double deltaT);
-        void resolveRigidConstraints(double deltaT);
+        bool resolveRigidConstraints(double deltaT);
         void setupSprings();    
         
     protected:
@@ -34,6 +34,7 @@ class Shape
         
         Point* points;
         LinkedList<Spring*> springs;
+        LinkedList<Surface*> surfaces;
         
         
 

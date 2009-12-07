@@ -16,7 +16,7 @@ public:
     Point* getPoint2();
     
     void addForces(double deltaT);
-    void resolveRigidConstraints(double deltaT);
+    bool resolveRigidConstraints(double deltaT);
     
     void calcInertialLength();
     
@@ -29,6 +29,8 @@ public:
     static double getMinlength();
     static void setMaxlength(double max);
     static void setMinlength(double min);
+    
+    static void setRigidSprings(bool enable);
     
     
 protected:
@@ -43,7 +45,9 @@ private:
     static double dampening; 
     static double maxlength;
     static double minlength;
-    
+  
+    static bool rigidSprings;
+  
 };  
 
 

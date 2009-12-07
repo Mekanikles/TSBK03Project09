@@ -14,13 +14,13 @@ const int screenwidth = 640;
 const int screenheight = 480;
 
 const double targetFps = 30;
-const double frameLength = 1.0/targetFps;
+const double frameLength = 1.0/30;
 
 Simulator* sim;
 Renderer* renderer;
 
 
-void handleCamera()
+void handleInput()
 {
     static double size = 2;
 
@@ -33,7 +33,7 @@ void handleCamera()
     
     if (platform->getMouseButton(0))
     {
-        sim->attract(Vector3(mrelx, -mrely, 0), 10);
+        sim->attract(Vector3(mrelx, -mrely, mrelx), 10);
     }
     else
     {
@@ -200,7 +200,18 @@ void handleCamera()
         fprintf(stderr, "Spring minlength: %f\n", l);
     }    
             
-    
+ 
+    // Toggle using rigid springs
+    if (platform->getChar('C'))
+    {
+        sim->setRigidSprings(true);
+        fprintf(stderr, "Rigid springs enabled\n");
+    }
+    else if (platform->getChar('X'))
+    {
+        sim->setRigidSprings(false);
+        fprintf(stderr, "Rigid springs disabled\n");
+    }      
     
     int digitkey;
     for (digitkey = 0; digitkey < 10; digitkey++)
@@ -221,7 +232,7 @@ void handleCamera()
 void mainloop(double dt)
 {
     sim->tick(dt);
-    handleCamera();
+    handleInput();
     renderer->render(sim);
 }
 
