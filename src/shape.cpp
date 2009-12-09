@@ -8,16 +8,23 @@
 
 #include "stdio.h"
 
-Shape::Shape(int pointcount):
-    pointcount(pointcount)
+Shape::Shape(int pointcount, int indexCount):
+    pointcount(pointcount), indexCount(indexCount)
 {
     points = new Point[pointcount];
-   
+    surfaceIndices = new int[indexCount];
+    fprintf(stderr, "Shape: indexcount: %i\n", this->indexCount);
+    for (int i = 0; i < this->indexCount; i++)
+    {
+            surfaceIndices[i] = 0;
+    }
+
 }
 
 Shape::~Shape()
 {
     delete[] points;
+    delete surfaceIndices;
 }
 
 
@@ -175,19 +182,44 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
 void Shape::render()
 {
     Vector3 pos;
-    Vector3 pos2;
     
-    for (int i = 0; i < this->pointcount; i++)
-    {
-
-        glBegin(GL_POINTS);
+    glBegin(GL_TRIANGLES);
+    { 
+    
+        for (int i = 0; i < this->indexCount; i+=3)
         {
-            pos = this->points[i].getPos();
+            
+            pos = this->points[this->surfaceIndices[i]].getPos();
+           
+            glVertex3d(pos.getX(), pos.getY(), pos.getZ());
+            pos = this->points[this->surfaceIndices[i+1]].getPos();
+           
+            glVertex3d(pos.getX(), pos.getY(), pos.getZ());
+            pos = this->points[this->surfaceIndices[i+2]].getPos();
+           
             glVertex3d(pos.getX(), pos.getY(), pos.getZ());
         }
-        glEnd();        
     }
+    glEnd();        
+}
 
+void Shape::renderWireframe()
+{
+    Vector3 pos;
+    Vector3 pos2;
+    
+    glBegin(GL_POINTS);
+    {
+        for (int i = 0; i < this->pointcount; i++)
+        {
+
+            pos = this->points[i].getPos();
+            glVertex3d(pos.getX(), pos.getY(), pos.getZ());
+        
+        }
+    }
+    glEnd();
+        
     LinkedList<Spring*>* springs = this->getSpringList();
     glBegin(GL_LINES);
     {
@@ -201,6 +233,4 @@ void Shape::render()
         }
     }   
     glEnd();
-    
-    
 }

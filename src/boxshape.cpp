@@ -45,7 +45,7 @@ void BoxShape::addNeighbor(Point* p, int x, int y, int z)
 }
 
 BoxShape::BoxShape(const Box& box, int resolution):
-    Shape(ceil(pow(resolution + 1, 3))), res(resolution)
+    Shape(ceil(pow(resolution + 1, 3)), 3*(resolution * 2) * (resolution) * 6), res(resolution)
 {
     
     Vector3 v1 = box.getV1();
@@ -60,6 +60,7 @@ BoxShape::BoxShape(const Box& box, int resolution):
   
     fprintf(stderr, "Creating box shape.\n");
     int pwind = 0;
+    int iwind = 0;
     // Create vertices and springs
     
     int ycount = 0;
@@ -95,6 +96,80 @@ BoxShape::BoxShape(const Box& box, int resolution):
                     }
                 }
                 
+                // Surface triangles
+                if (xcount < this->res && ycount < this->res && zcount == 0)
+                {
+                    // upper front triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);
+
+                    // lower front triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount + 1, zcount);                    
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);    
+                }   
+                if (xcount < this->res && ycount < this->res && zcount == this->res)
+                {
+                    // upper back triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+
+                    // lower back triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);    
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount + 1, zcount);                    
+                }    
+                if (xcount == this->res && ycount < this->res && zcount < this->res)
+                {
+                    // upper right triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);
+
+                    // lower right triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount + 1);                    
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);    
+                } 
+                if (xcount == 0 && ycount < this->res && zcount < this->res)
+                {
+                    // upper left triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+
+                    // lower left triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);    
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount + 1, zcount + 1);                    
+                } 
+                if (xcount < this->res && ycount == this->res && zcount < this->res)
+                {
+                    // upper top triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);
+
+                    // lower bottom triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount + 1);                    
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);    
+                } 
+                if (xcount < this->res && ycount == 0 && zcount < this->res)
+                {
+                    // upper front triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);
+
+                    // lower front triangle
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount, ycount, zcount + 1);
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount);    
+                    this->surfaceIndices[iwind++] = getPointWindIndex(xcount + 1, ycount, zcount + 1);                    
+                }  
+                
                 //fprintf(stderr, "swind: %i\n", swind);
                 pwind++;
                 
@@ -109,7 +184,8 @@ BoxShape::BoxShape(const Box& box, int resolution):
     }
    
     fprintf(stderr, "pwind: %i, pcount: %i\n", pwind, pointcount);
-
+    fprintf(stderr, "iwind: %i, icount: %i\n", iwind, this->indexCount);
+    
     setupSprings();
     
 }

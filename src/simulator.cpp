@@ -208,13 +208,25 @@ void Simulator::tick(double dt)
     }
 }
 
-void Simulator::renderShapes()
+void Simulator::renderShapes(bool wireframe)
 {
-    Node<Shape*>* node = this->shapes.getFirst();
-    while (node != NULL)
+    if (!wireframe)
     {
-        node->item->render();
-        node = node->next;
+        Node<Shape*>* node = this->shapes.getFirst();
+        while (node != NULL)
+        {
+            node->item->render();
+            node = node->next;
+        }
+    }
+    else
+    {
+        Node<Shape*>* node = this->shapes.getFirst();
+        while (node != NULL)
+        {
+            node->item->renderWireframe();
+            node = node->next;
+        }    
     }
 }
 

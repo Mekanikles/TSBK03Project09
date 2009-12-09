@@ -13,8 +13,10 @@ class Shape
     public:
     
         int pointcount;
+        int indexCount;
         
-        virtual void render();
+        void render();
+        void renderWireframe();
         void addAcceleration(Vector3 acc);
         void applyForces(double deltaT);
         void collideWithSurfaceMap(Surface* map, double deltaT);
@@ -30,11 +32,11 @@ class Shape
         
     protected:
     
-        Shape(int pointcount);
+        Shape(int pointcount, int indexcount);
         
         Point* points;
         LinkedList<Spring*> springs;
-        LinkedList<Surface*> surfaces;
+        int* surfaceIndices;
         
         
 

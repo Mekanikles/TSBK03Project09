@@ -37,7 +37,7 @@ void Renderer::render(Simulator* sim)
     glLineWidth(1);
     glPointSize(6);
     glColor4f(1, 0, 0, 1);
-    sim->renderShapes();
+    sim->renderShapes(false);
     
     // Draw floor
     glColor4f(1, 1, 1, 0.4);
@@ -62,7 +62,7 @@ void Renderer::render(Simulator* sim)
     glPointSize(8);
     glColor4f(0, 0, 0, 0.3);
     glScaled(1, 0, 1);
-    sim->renderShapes();
+    sim->renderShapes(false);
  
 
 }
