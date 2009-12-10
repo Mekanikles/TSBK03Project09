@@ -155,8 +155,8 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
 
                 // Move to intersecion point. Conserve velocity accounting for friciton and restitution.
                 // Since verlets are used, new velocity are forced by explicitly setting the old position
-                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
-                                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
+                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())),
+                                        intersection - veltan * (1-r) * (1 - s->getFriction()));
             }  
         }
     }

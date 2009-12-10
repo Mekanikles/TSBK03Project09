@@ -15,9 +15,7 @@ public:
     Vector3 getV1() const;
     Vector3 getV2() const;
     Vector3 getNormal() const;
-    static double getRestitution();
     static double getFriction();
-    static void setRestitution(double r);
     static void setFriction(double f);
     
     bool isPointInsideBounds(Vector3 point);
@@ -33,7 +31,6 @@ private:
     Vector3 v1;
     Vector3 v2;
     Vector3 normal;
-    static double restitution;
     static double friction;
     
 

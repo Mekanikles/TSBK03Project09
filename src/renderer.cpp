@@ -82,7 +82,7 @@ void Renderer::render(Simulator* sim)
     glTranslated(0, 0.01, 0);
     
     // Render simulation surfaces
-    glColor4f(0, 0.5, 0.7, 0.7);
+    glColor4f(0, 0.5, 0.7, 1.0);
     sim->renderSurfaces(this->wireframe);
  
     glColor4f(1.0, 1.0, 1.0, 0.7);
@@ -96,6 +96,7 @@ void Renderer::render(Simulator* sim)
     }
        
     worldShader->deactivate();
+    
 }
 
 

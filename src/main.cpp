@@ -99,29 +99,6 @@ void handleInput()
         fprintf(stderr, "Surface friction: %f\n", f);    
     }
 
-    // Changing surface restitution
-    if (platform->getChar('B'))
-    {
-        double r = Surface::getRestitution();
-        r += 1*frameLength;
-        if (r > 1.0)
-            r = 1.0;
-        Surface::setRestitution(r);
-    
-        fprintf(stderr, "Surface restitution: %f\n", r);    
-    }
-    else if (platform->getChar('V'))
-    {
-        double r = Surface::getRestitution();
-        r -= 1*frameLength;
-        if (r < 0.0)
-            r = 0.0;
-        Surface::setRestitution(r);
-    
-        fprintf(stderr, "Surface restitution: %f\n", r);    
-    }
-    
-
     // Changing spring constant
     if (platform->getChar('U'))
     {

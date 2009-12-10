@@ -3,7 +3,6 @@
 
 #include "opengl.h"
 
-double Surface::restitution = 0.0;
 double Surface::friction = 1.0;
     
 Surface::Surface()
@@ -33,20 +32,11 @@ Vector3 Surface::getNormal() const
     return normal;
 }
 
-double Surface::getRestitution()
-{
-    return restitution;
-}
-
 double Surface::getFriction()
 {
     return friction;
 }
     
-void Surface::setRestitution(double r)
-{
-    restitution = r;
-}
 
 void Surface::setFriction(double f)
 {
