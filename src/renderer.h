@@ -4,6 +4,7 @@
 #include "primitives.h"
 
 class Simulator;
+class Shader;
 
 class Renderer
 {
@@ -18,6 +19,8 @@ public:
     void turnCamera(const double d);
     void tiltCamera(const double d);
     
+    bool setWireframe(bool enabled);
+    double getCameraTurnAngle();
     
 protected:
 private:
@@ -26,7 +29,11 @@ private:
     double camAngleY;
     double camAngleX;
     
+    bool wireframe;    
 
+    Shader* shapeShader;
+    Shader* worldShader;
+    Shader* borderShader;
 };
 
 #endif // PROJECT_RENDERER_H

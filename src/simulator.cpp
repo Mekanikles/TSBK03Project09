@@ -18,7 +18,7 @@ static double map[10][10] ={{8, 7, 6, 5, 4, 4, 5, 6, 7, 8},
                             {5, 4, 3, 2, 1, 1, 2, 3, 4, 5},
                             {6, 5, 4, 3, 1, 1, 3, 4, 3, 6},
                             {7, 6, 5, 4, 3, 3, 4, 3, 2, 7},
-                            {8, 7, 6, 5, 3, 3, 5, 6, 7, 1}};
+                            {8, 7, 6, 5, 3, 3, 5, 6, 7, 8}};
                                 
 Simulator::Simulator(double creationTime)
 {
@@ -67,7 +67,7 @@ Simulator::Simulator(double creationTime)
             
             //Surface* surface = new Surface(Vector3((-size / 2 + i) * xs, 0, (-size / 2 + j) * zs), Vector3(xs, 0, 0), Vector3(0, 0, zs));
             this->surfaces.addFirst(&this->surfacemap[i * 2 + j * 10 * 2 + 0]); 
-            //this->surfaces.addFirst(&this->surfacemap[i * 2 + j * 10 * 2 + 1]);
+            this->surfaces.addFirst(&this->surfacemap[i * 2 + j * 10 * 2 + 1]);
         }
     }
     
@@ -230,14 +230,26 @@ void Simulator::renderShapes(bool wireframe)
     }
 }
 
-void Simulator::renderSurfaces()
+void Simulator::renderSurfaces(bool wireframe)
 {
-    Node<Surface*>* s = this->surfaces.getFirst();
-    while (s != NULL)
+    if (!wireframe)
     {
-        s->item->render();
-        s=s->next;
-    }            
+        Node<Surface*>* s = this->surfaces.getFirst();
+        while (s != NULL)
+        {
+            s->item->render();
+            s=s->next;
+        }            
+    }
+    else
+    {
+        Node<Surface*>* s = this->surfaces.getFirst();
+        while (s != NULL)
+        {
+            s->item->renderWireframe();
+            s=s->next;
+        }            
+    }
 }
 
 void Simulator::applyForces(double deltaT)

@@ -59,12 +59,11 @@ double Vector3::dot(const Vector3& v) const
 
 Vector3 Vector3::cross(const Vector3& v) const
 {   
-
     Vector3 ret = Vector3(this->d[1] * v.d[2] - v.d[1] * this->d[2], 
                     this->d[2] * v.d[0] -  v.d[2] * this->d[0], 
                     this->d[0] * v.d[1] -  v.d[0] * this->d[1]);
                  
-    fprintf(stderr, "cross: (%f, %f, %f)\n", ret.getX(), ret.getY(), ret.getZ());
+    //fprintf(stderr, "cross: (%f, %f, %f)\n", ret.getX(), ret.getY(), ret.getZ());
     return ret;     
 }
 

@@ -22,6 +22,8 @@ public:
     void addImpulse(Vector3 impulse);
     void applyForce(double deltaT);
     
+    Vector3 getNormal();
+    void setNormal(const Vector3& n);
     Vector3 getImpulse();
     Vector3 getVelocity();
     void setVelocity(const Vector3& vel);
@@ -33,6 +35,7 @@ public:
 protected:
 
     Vector3 pos;
+    Vector3 normal;
     Vector3 old_pos;
     double mass;
     Vector3 velocity;

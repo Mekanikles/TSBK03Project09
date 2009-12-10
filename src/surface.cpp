@@ -72,25 +72,40 @@ double Surface::signedDistanceToPoint(Vector3 point)
     return pvect.dot(this->normal);
 }
 
-void Surface::render()
+void Surface::renderWireframe()
 {
     Vector3 p1 = this->p;
     Vector3 p2 = this->p + this->v1;
     Vector3 p3 = this->p + this->v2;
     Vector3 p4 = this->p + this->v1 + this->v2;
 
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_LINE_STRIP);
     {
         glVertex3d(p1.getX(), p1.getY(), p1.getZ());
         glVertex3d(p3.getX(), p3.getY(), p3.getZ());
         glVertex3d(p2.getX(), p2.getY(), p2.getZ());
-    }
-    glEnd();
-    
-    glBegin(GL_LINES);
-    {
         glVertex3d(p1.getX(), p1.getY(), p1.getZ());
         glVertex3d(p1.getX()+ this->normal.getX(), p1.getY()+ this->normal.getY(), p1.getZ()+ this->normal.getZ());
+    }
+    glEnd();
+}
+
+void Surface::render()
+{
+    Vector3 p1 = this->p;
+    Vector3 p2 = this->p + this->v1;
+    Vector3 p3 = this->p + this->v2;
+    Vector3 norm;
+    
+    
+    glBegin(GL_TRIANGLES);
+    {
+        norm = (p3-p1).cross(p2-p1);
+        norm.normalize();
+        glNormal3f(norm.getX(), norm.getY(), norm.getZ());
+        glVertex3d(p1.getX(), p1.getY(), p1.getZ());
+        glVertex3d(p3.getX(), p3.getY(), p3.getZ());
+        glVertex3d(p2.getX(), p2.getY(), p2.getZ());
     }
     glEnd();
 }

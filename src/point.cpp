@@ -7,13 +7,13 @@
 #include "spring.h"
 
 Point::Point(const Vector3& pos, double mass):
-    pos(pos), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)),displacement(Vector3(0,0,0)), locked(false), old_deltaT(1)
+    pos(pos), normal(Vector3(1, 0, 0)), old_pos(pos), mass(mass), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)),displacement(Vector3(0,0,0)), locked(false), old_deltaT(1)
 {
     
 }
 
 Point::Point():
-    pos(Vector3(0,0,0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), displacement(Vector3(0,0,0)), locked(false), old_deltaT(1)
+    pos(Vector3(0,0,0)), normal(Vector3(1, 0, 0)), old_pos(pos), mass(1.0), velocity(Vector3(0,0,0)), impulse(Vector3(0,0,0)), displacement(Vector3(0,0,0)), locked(false), old_deltaT(1)
 {
     
 }
@@ -72,12 +72,23 @@ void Point::doVerletStep(double deltaT)
     
     this->old_pos = temp;
     this->old_deltaT = deltaT;
+
 }
 
 void Point::applyForce(double deltaT)
 {
     doVerletStep(deltaT);
     this->impulse = Vector3(0, 0, 0);
+}
+
+Vector3 Point::getNormal()
+{
+    return this->normal;
+}
+
+void Point::setNormal(const Vector3& n)
+{
+    this->normal = n;
 }
 
 Vector3 Point::getImpulse()

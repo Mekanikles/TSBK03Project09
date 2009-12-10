@@ -8,6 +8,8 @@
 
 #include "opengl.h"
 
+#include "math.h"
+
 Platform* platform;
 
 const int screenwidth = 640;
@@ -33,7 +35,11 @@ void handleInput()
     
     if (platform->getMouseButton(0))
     {
-        sim->attract(Vector3(mrelx, -mrely, mrelx), 10);
+        Vector3 v = Vector3(mrelx, -mrely, 0);
+        double angle  = -renderer->getCameraTurnAngle() * M_PI/180;
+        Vector3 rotv = Vector3(cos(angle) * v.getX() + sin(angle) * v.getZ(), v.getY(), -sin(angle) * v.getX() + cos(angle) * v.getZ());
+        
+        sim->attract(rotv, 10);
     }
     else
     {
@@ -212,7 +218,22 @@ void handleInput()
         sim->setRigidSprings(false);
         fprintf(stderr, "Rigid springs disabled\n");
     }      
-    
+
+
+    // Toggle using wireframes
+    if (platform->getChar('P'))
+    {
+        renderer->setWireframe(true);
+        fprintf(stderr, "Wireframe enabled\n");
+    }
+    else if (platform->getChar('Å'))
+    {
+        renderer->setWireframe(false);
+        fprintf(stderr, "Wireframe disabled\n");
+    }      
+
+
+    // Shape creation
     int digitkey;
     for (digitkey = 0; digitkey < 10; digitkey++)
     {

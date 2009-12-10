@@ -17,7 +17,7 @@ public:
 
     void tick(double dt);
     void renderShapes(bool wireframe);
-    void renderSurfaces();
+    void renderSurfaces(bool wireframe);
     void resetShape(int id, double size);
     void attract(Vector3 pos, double strength);
         

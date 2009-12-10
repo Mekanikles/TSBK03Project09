@@ -3,7 +3,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#include "GL/glfw.h"
+#include "opengl.h"
 
 
 Platform* Platform::instance = NULL;
@@ -50,8 +50,32 @@ bool Platform::initialize(int windowWidth, int windowHeight, bool fullscreen)
 
 	glShadeModel(GL_SMOOTH);						// Enable Smooth Shading
 	glClearDepth(1.0f);							// Depth Buffer Setup
-	glDepthFunc(GL_LEQUAL);							// The Type Of Depth Testing To Do
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);			// Really Nice Perspective Calculations
+	glDepthFunc (GL_LESS);	    							// The Type Of Depth Testing To Do
+	
+    glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);	// Use The Good Calculations
+    glEnable (GL_LINE_SMOOTH);
+    
+    #ifdef WIN32
+        GLenum err = glewInit();
+        if (GLEW_OK != err)
+        {
+          // Problem: glewInit failed, something is seriously wrong.
+          fprintf(stderr, "Glew initialization error: %s\n", glewGetErrorString(err));
+          return false;
+        }
+        fprintf(stdout, "Using GLEW %s\n", glewGetString(GLEW_VERSION));  
+
+		if (glewIsSupported("GL_VERSION_2_0"))
+        {
+			printf("Ready for OpenGL 2.0\n");
+        }
+		else 
+        {
+			printf("OpenGL 2.0 not supported\n");
+			return false;
+		}      
+    #endif   
+        
 
     this->initialized = true;
     this->running = true;

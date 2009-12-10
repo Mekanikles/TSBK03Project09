@@ -24,6 +24,7 @@ public:
     double signedDistanceToPoint(Vector3 point);
 
     void render();
+    void renderWireframe();
 
 protected:
 private:

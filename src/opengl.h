@@ -1,12 +1,16 @@
 #ifndef PROJECT_OPENGL_H
 #define PROJECT_OPENGL_H
 
-#include "GL/gl.h"
-#include "GL/glu.h"
+
 #ifndef WIN32
     #include "GL/glext.h"
 #else
-    //include glew
+    #include "GL/glew.h"
 #endif    
+
+#include "GL/glfw.h"
+
+#include "GL/gl.h"
+#include "GL/glu.h"
 
 #endif //PROJECT_OPENGL_H
