@@ -35,13 +35,19 @@ void handleInput()
     
     if (platform->getMouseButton(0))
     {
-        Vector3 v = Vector3(mrelx, -mrely, 0);
+        Vector3 v = Vector3(mrelx, 0, mrely);
         double angle  = -renderer->getCameraTurnAngle() * M_PI/180;
         Vector3 rotv = Vector3(cos(angle) * v.getX() + sin(angle) * v.getZ(), v.getY(), -sin(angle) * v.getX() + cos(angle) * v.getZ());
         
         sim->attract(rotv, 10);
     }
-    else
+    if (platform->getMouseButton(1))
+    {
+        Vector3 v = Vector3(0, -mrely, 0);   
+        sim->attract(v, 10);
+    }
+    
+    if (!platform->getMouseButton(0) && !platform->getMouseButton(1))
     {
         if (mrelx)
             renderer->turnCamera(mrelx);

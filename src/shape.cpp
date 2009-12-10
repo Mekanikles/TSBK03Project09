@@ -97,9 +97,6 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
     
     for (int i = 0; i < this->pointcount; i++)
     {
-    
-        //for (int b = 0; b < 10*10*2; b++)
-        {
         Vector3 pos = this->points[i].getPos();
     
         int x = (int)((pos.getX() + 50 - 5) / 10);
@@ -112,17 +109,12 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
             z = 9;
         if (z < 0) 
             z = 0;
-    
-    
         
-    
         int k = 1;
         if ((pos.getX() + 50 - 5 - (double)x * 10) + (pos.getZ() + 50 - 5 - (double)z * 10) <= 10)
             k = 0;
-        
-       
+               
         Surface* s = &map[z * 10 * 2 + x * 2 + k];
-        //Surface* s = &map[b];
         
         // Distance from point to nearest point on plane
         double distance = s->signedDistanceToPoint(pos);
@@ -130,11 +122,7 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
         // If distance is negative, point is behind plane
         if (distance < 0.0)
         {        
-
-            //fprintf(stderr, "distance: %f x:%i, z:%i, posx:%f, posz:%f, surfP(%f, %f, %f), surfV1(%f, %f, %f), surfV2(%f, %f, %f)\n\n", distance, x, z, pos.getX(), pos.getZ(), s->getP().getX(), s->getP().getY(), s->getP().getZ(), s->getV1().getX(), s->getV1().getY(), s->getV1().getZ(), s->getV2().getX(), s->getV2().getY(), s->getV2().getZ());  
-            //fprintf(stderr, "K: %i\n", k);
-            // Check if point is within surface bounds
-            //if (s->isPointInsideBounds(pos))
+            // No need to check if point is inside bounds. We assume this from the surface map lookup.
             {
 
      
@@ -145,12 +133,16 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
                 // Velocity along surface plane
                 Vector3 veltan = vel - normvel;
                 
+                // Calculate intersection point from the nearest point on plane minus the intersection
+                // velocity along the plane.
+                
+                Vector3 intersection;
+                
                 // Ratio of velocity that intersects the plane
                 double r = -distance / normvel.length();
                 
-                Vector3 intersection;
-                // Make sure ratio isn't too big
-                if (r > 10000.0)
+                // If ratio > 1 then the previous position was already colliding.
+                if (r > 1.0)
                 {
                     intersection = this->points[i].getPos() - s->getNormal() * distance - veltan;
                     r = 1.0;
@@ -160,20 +152,12 @@ void Shape::collideWithSurfaceMap(Surface* map, double deltaT)
                     // Calculate intersection point from ratio
                     intersection = this->points[i].getPos() - s->getNormal() * distance - veltan * r;
                 }
-                
-                Vector3 pos = this->points[i].getPos();
-                this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
-                
+
                 // Move to intersecion point. Conserve velocity accounting for friciton and restitution.
                 // Since verlets are used, new velocity are forced by explicitly setting the old position
-                //this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
-                                        //intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
-                
-                //this->points[i].setVelocity(normvel * -s->getRestitution() + veltan * (1 - s->getFriction()));
-                //this->points[i].setPos(pos - s->getNormal() * distance, pos - s->getNormal() * distance);    
-                //this->points[i].setVelocity(Vector3(0,0,0));
+                this->points[i].setPos(intersection + (veltan * r * (1 - s->getFriction())) - (normvel * r * s->getRestitution()),
+                                        intersection - veltan * (1-r) * (1 - s->getFriction()) +  normvel * (1-r) * s->getRestitution());
             }  
-        }
         }
     }
 }

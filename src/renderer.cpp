@@ -82,7 +82,7 @@ void Renderer::render(Simulator* sim)
     glTranslated(0, 0.01, 0);
     
     // Render simulation surfaces
-    glColor4f(0, 0.5, 0.7, 1);
+    glColor4f(0, 0.5, 0.7, 0.7);
     sim->renderSurfaces(this->wireframe);
  
     glColor4f(1.0, 1.0, 1.0, 0.7);
@@ -94,23 +94,8 @@ void Renderer::render(Simulator* sim)
         
         glPolygonMode (GL_FRONT, GL_FILL);
     }
-    
-   
-   
+       
     worldShader->deactivate();
- 
-    
-    glTranslated(0, 0.01, 0);
-    
-    // Render shadow
-    glTranslated(0, 0.001, 0);
-    glLineWidth(2);
-    glPointSize(8);
-    glColor4f(0, 0, 0, 0.3);
-    glScaled(1, 0, 1);
-    sim->renderShapes(this->wireframe);
- 
-
 }
 
 
