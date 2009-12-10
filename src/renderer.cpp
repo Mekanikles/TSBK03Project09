@@ -17,16 +17,11 @@ Renderer::Renderer()
     wireframe = false;
 
 
-    this->shapeShader = new Shader("spec.vert", "spec.frag");
-    this->worldShader = new Shader("spec.vert", "spec.frag");
-    this->borderShader = new Shader("border.vert", "border.frag");
+    this->worldShader = new Shader("diff.vert", "diff.frag");
 }
 
 Renderer::~Renderer()
 {
-    
-    delete this->shapeShader;
-    delete this->borderShader;
     delete this->worldShader;
 }
 
@@ -43,7 +38,7 @@ void Renderer::render(Simulator* sim)
 
     
     if (!this->wireframe)
-        shapeShader->activate();    
+        worldShader->activate();    
     
     // Render simulation shapes  
     // Render normally
@@ -52,7 +47,7 @@ void Renderer::render(Simulator* sim)
     glColor4f(1, 0, 0, 1);
     sim->renderShapes(this->wireframe);
     
-    shapeShader->deactivate();
+    worldShader->deactivate();
 
     // Render surface mesh.
     // Since antialiasing for lines is turned on, and the background is black, 

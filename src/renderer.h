@@ -31,9 +31,7 @@ private:
     
     bool wireframe;    
 
-    Shader* shapeShader;
     Shader* worldShader;
-    Shader* borderShader;
 };
 
 #endif // PROJECT_RENDERER_H
