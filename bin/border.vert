@@ -1,14 +1,15 @@
 //
-// Vertex shader for Gooch shading
-//
-// Author: Randi Rost
-//
-// Copyright (c) 2002-2005 3Dlabs Inc. Ltd. 
-//
-// See 3Dlabs-License.txt for license information
+varying vec4 ShadowCoord;
+
+
 
 void main()
 {
-    vec3 tnorm      = normalize(gl_NormalMatrix * gl_Normal);
-    gl_Position     = ftransform() + 0.05 * vec4(tnorm.x, tnorm.y, 0 ,0);
+
+
+     	ShadowCoord= gl_TextureMatrix[7] * gl_Vertex;
+  
+		gl_Position = ftransform();
+
+		gl_FrontColor = gl_Color;
 }

@@ -48,10 +48,10 @@ void handleInput()
             
         if (mrely)
             renderer->tiltCamera(mrely);
-
-        if (relx || rely || relz)
-            renderer->moveCamera(Vector3(relx/2, rely/2, relz/2));
     }
+    
+    if (relx || rely || relz)
+        renderer->moveCamera(Vector3(relx/2, rely/2, relz/2));
     
     // Changing size
     if (platform->getChar('T'))

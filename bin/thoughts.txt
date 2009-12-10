@@ -3,5 +3,8 @@
 The main reason for collapse seem to be "folding", ie where elongated springs allow other springs/nodes to move inbetween them.
 The biggest contributor to preventing collapse is a short maxlength. Not a long minlength as might have been expected.
 
+Failade lösningar:
+Prata om "bollen", problem att realistiskt bevara rotationsmoment.
+Prata om max-vinkel-hastigheten, problem, som allt annat, när top-vertexen i en triangel smyger sig förbi basen.
 
 

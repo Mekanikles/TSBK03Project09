@@ -54,23 +54,18 @@ void Renderer::render(Simulator* sim)
     
     shapeShader->deactivate();
 
-    // Render border
-    
+    // Render surface mesh.
+    // Since antialiasing for lines is turned on, and the background is black, 
+    // this will create a cel-shade-style border around the shape
     if (!this->wireframe)
     {
         glColor4f(0, 0, 0, 0.1);
-        //glDepthFunc (GL_LESS);
-        //borderShader->activate();
-        glLineWidth(3);
+        glLineWidth(4);
         glPolygonMode (GL_FRONT, GL_LINE);
         glCullFace(GL_BACK);
         sim->renderShapes(false);
-        
         glCullFace(GL_BACK);
         glPolygonMode (GL_FRONT, GL_FILL);
-        //borderShader->deactivate();
-        glDepthFunc (GL_LEQUAL);
-        
     }
     
     if (!this->wireframe)
