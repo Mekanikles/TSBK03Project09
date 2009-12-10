@@ -17,7 +17,7 @@ Renderer::Renderer()
     wireframe = false;
 
 
-    this->shapeShader = new Shader("test.vert", "test.frag");
+    this->shapeShader = new Shader("spec.vert", "spec.frag");
     this->worldShader = new Shader("spec.vert", "spec.frag");
     this->borderShader = new Shader("border.vert", "border.frag");
 }
@@ -33,7 +33,7 @@ Renderer::~Renderer()
 void Renderer::render(Simulator* sim)
 {
     glLoadIdentity();
-    gluPerspective(70, 4/3, 0.1, 300);
+    gluPerspective(70, 4/3, 0.1, 200);
  
     glRotated(camAngleY, 1, 0, 0);
     glRotated(camAngleX, 0, 1, 0);    
@@ -41,26 +41,6 @@ void Renderer::render(Simulator* sim)
      
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-    // Render border
-    /*
-    if (!this->wireframe)
-    {
-        glColor4f(0, 0, 0, 1);
-        glDepthFunc (GL_LESS);
-        //borderShader->activate();
-        glLineWidth(2);
-        glPolygonMode (GL_BACK, GL_LINE);
-        glCullFace(GL_FRONT);
-        sim->renderShapes(false);
-        
-        glCullFace(GL_BACK);
-        glPolygonMode (GL_BACK, GL_FILL);
-        //borderShader->deactivate();
-        glDepthFunc (GL_LEQUAL);
-        
-    }
-    */
     
     if (!this->wireframe)
         shapeShader->activate();    
@@ -73,30 +53,62 @@ void Renderer::render(Simulator* sim)
     sim->renderShapes(this->wireframe);
     
     shapeShader->deactivate();
+
+    // Render border
     
-    
-    // Draw floor
-    glColor4f(1, 1, 1, 0.4);
-    glBegin(GL_QUADS);
+    if (!this->wireframe)
     {
-        glVertex3d(this->camPos.getX() - 1000, 0, this->camPos.getZ() - 1000);
-        glVertex3d(this->camPos.getX() - 1000, 0, this->camPos.getZ() + 1000);
-        glVertex3d(this->camPos.getX() + 1000, 0, this->camPos.getZ() + 1000);
-        glVertex3d(this->camPos.getX() + 1000, 0, this->camPos.getZ() - 1000);   
+        glColor4f(0, 0, 0, 0.1);
+        //glDepthFunc (GL_LESS);
+        //borderShader->activate();
+        glLineWidth(3);
+        glPolygonMode (GL_FRONT, GL_LINE);
+        glCullFace(GL_BACK);
+        sim->renderShapes(false);
+        
+        glCullFace(GL_BACK);
+        glPolygonMode (GL_FRONT, GL_FILL);
+        //borderShader->deactivate();
+        glDepthFunc (GL_LEQUAL);
+        
     }
-    glEnd();
-
-    glTranslated(0, 0.01, 0);
-
+    
     if (!this->wireframe)
         worldShader->activate();
-
+    
+    // Draw floor
+    glDepthFunc (GL_LESS);
+    glColor4f(0.7, 0.7, 1, 1);
+    glBegin(GL_QUADS);
+    {
+        glNormal3d(0,1,0);
+        glVertex3d(this->camPos.getX() - 1000, -1, this->camPos.getZ() - 1000);
+        glVertex3d(this->camPos.getX() - 1000, -1, this->camPos.getZ() + 1000);
+        glVertex3d(this->camPos.getX() + 1000, -1, this->camPos.getZ() + 1000);
+        glVertex3d(this->camPos.getX() + 1000, -1, this->camPos.getZ() - 1000);   
+    }
+    glEnd();
+    glDepthFunc (GL_LEQUAL);
+    glTranslated(0, 0.01, 0);
+    
     // Render simulation surfaces
-    glColor4f(1, 0, 0.7, 0.5);
+    glColor4f(0, 0.5, 0.7, 1);
     sim->renderSurfaces(this->wireframe);
+ 
+    glColor4f(1.0, 1.0, 1.0, 0.7);
+    if (!this->wireframe)
+    {
+        glPolygonMode (GL_FRONT, GL_LINE);
+        glLineWidth(3);
+        sim->renderSurfaces(this->wireframe);
+        
+        glPolygonMode (GL_FRONT, GL_FILL);
+    }
     
    
+   
     worldShader->deactivate();
+ 
     
     glTranslated(0, 0.01, 0);
     

@@ -95,7 +95,7 @@ void Simulator::resetShape(int id, double size)
         this->shapes.remove(node);   
     }
 
-    Vector3 pos = Vector3(0, size * 5, 0);
+    Vector3 pos = Vector3(0, size * 4, 0);
 
     switch(id)
     {
@@ -144,21 +144,21 @@ void Simulator::resetShape(int id, double size)
         case 7:
         {
             fprintf(stderr, "Creating 3x3 cloth\n");
-            ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos, size*3, size*6, 3);
+            ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos * 1.5, size*3, size*6, 3);
             this->shapes.addFirst(cloth); 
             break;        
         }
         case 8:
         {
             fprintf(stderr, "Creating 7x7 cloth\n");
-            ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos, size*3, size*6, 7);
+            ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos * 1.5, size*3, size*6, 7);
             this->shapes.addFirst(cloth); 
             break;        
         }
         case 9:
         {
             fprintf(stderr, "Creating 15x15 cloth\n");
-            ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos, size*3, size*6, 15);
+            ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos * 1.5, size*3, size*6, 15);
             this->shapes.addFirst(cloth); 
             break;        
         }          

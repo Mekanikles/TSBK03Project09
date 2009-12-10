@@ -10,5 +10,5 @@
 void main()
 {
     vec3 tnorm      = normalize(gl_NormalMatrix * gl_Normal);
-    gl_Position     = ftransform() + 1.0 * vec4(tnorm.x, tnorm.y, 0 ,0);
+    gl_Position     = ftransform() + 0.05 * vec4(tnorm.x, tnorm.y, 0 ,0);
 }

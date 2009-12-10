@@ -15,9 +15,9 @@ varying vec4 pos;
 
 void main()
 {
-    float diff = max(0.5, 2 * dot(light, normal));
-
+    vec3 norm = normalize(normal);
+    float diff = max(0.4, dot(light, norm) * 1.5 + 0.3);
 
     //gl_FragColor = vec4(normal, 1);
-    gl_FragColor = vec4(diff * color.xyz, 1);
+    gl_FragColor = vec4(diff * color.xyz, 1);    
 }

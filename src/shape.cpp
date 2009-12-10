@@ -185,39 +185,22 @@ void Shape::render()
     Vector3 pos2;
     Vector3 pos3;
     Vector3 norm;
-    Vector3 norm1;
-    Vector3 norm2;
-    Vector3 norm3;
-    
-    for (int i = 0; i < this->indexCount; i+=3)
-    {
-        
-        pos1 = this->points[this->surfaceIndices[i]].getPos();
-        pos2 = this->points[this->surfaceIndices[i+1]].getPos();
-        pos3 = this->points[this->surfaceIndices[i+2]].getPos();
-        
-        norm = (pos2-pos1).cross(pos3-pos1);
-        this->points[this->surfaceIndices[i]].setNormal(norm);
-    }
-
+   
+  
     glBegin(GL_TRIANGLES);
     { 
     
         for (int i = 0; i < this->indexCount; i+=3)
         {
-            
             pos1 = this->points[this->surfaceIndices[i]].getPos();
             pos2 = this->points[this->surfaceIndices[i+1]].getPos();
             pos3 = this->points[this->surfaceIndices[i+2]].getPos();
-            norm1 = this->points[this->surfaceIndices[i]].getNormal();
-            norm2 = this->points[this->surfaceIndices[i+1]].getNormal();
-            norm3 = this->points[this->surfaceIndices[i+2]].getNormal();
-         
-            glNormal3f(norm1.getX(), norm1.getY(), norm1.getZ());
+             
+            norm = (pos2-pos1).cross(pos3-pos1);
+        
+            glNormal3d(norm.getX(), norm.getY(), norm.getZ());
             glVertex3d(pos1.getX(), pos1.getY(), pos1.getZ());
-            glNormal3f(norm2.getX(), norm2.getY(), norm2.getZ());
             glVertex3d(pos2.getX(), pos2.getY(), pos2.getZ());
-            glNormal3f(norm3.getX(), norm3.getY(), norm3.getZ());
             glVertex3d(pos3.getX(), pos3.getY(), pos3.getZ());
         }
     }
