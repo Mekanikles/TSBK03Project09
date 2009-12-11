@@ -73,7 +73,7 @@ Simulator::Simulator(double creationTime)
     
     
     
-    resetShape(1, 2);
+    //resetShape(1, 2);
     
     this->currentTime = creationTime;
     this->iterations = 0;

@@ -251,6 +251,8 @@ int main()
 {
     fprintf(stderr, "Project start!\n");
   
+    fprintf(stderr, "Use digits 1-9 to create shapes!\n");
+  
     platform = Platform::getInstance();
   
     platform->initialize(640, 480, false);

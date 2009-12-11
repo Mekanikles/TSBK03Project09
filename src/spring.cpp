@@ -191,19 +191,16 @@ void Spring::addForces(double deltaT)
     double intensity = length - this->inertialLength;
     
     if (fabs(intensity) < tolerance)
-    {
         return;
-    }
 
     // Take a guess to how the spring is located if length is 0
     if (length < tolerance)
-    {
         distance = relvel;
-    }
 
     intensity *= this->elasticity;
-   
     distance.normalize();
+    
+    // Damping
     relvel = distance * relvel.dot(distance);
     Vector3 dampening = relvel * (this->dampening * deltaT);
     

@@ -3,6 +3,14 @@
 The main reason for collapse seem to be "folding", ie where elongated springs allow other springs/nodes to move inbetween them.
 The biggest contributor to preventing collapse is a short maxlength. Not a long minlength as might have been expected.
 
+Boxshape:
+hyfsat lätt att få stabil. konstant antal fjädrar till alla punkter. Lider mest av kollaps
+Ballshape:
+svårt att uppnå stabilitet pga många fjädrar till samma punkt. Lätt att få "vikningar" i kanterna. Går att lösa med flera lager "hud". Ev få bort mittenpunkten. Lider mest av explosioner.
+
+Clothshape:
+Lätt att få stabil, litet antal fjädrar. Mycket flexibel. Stressar "upphängnaderna" mycket. Kan "vrida" sig om man otur.
+
 Failade lösningar:
 Prata om "bollen", problem att realistiskt bevara rotationsmoment.
 Prata om max-vinkel-hastigheten, problem, som allt annat, när top-vertexen i en triangel smyger sig förbi basen.
