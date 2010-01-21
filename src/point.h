@@ -19,12 +19,11 @@ public:
     void setPos(const Vector3& new_pos);    
     
     void displace(Vector3 d);
-    void addImpulse(Vector3 impulse);
+    void addForce(Vector3 force);
     void applyForce(double deltaT);
 
-    Vector3 getImpulse();
+    Vector3 getForce();
     Vector3 getVelocity();
-    void setVelocity(const Vector3& vel);
     double getMass();
     void lock(bool set);
     bool isLocked();
@@ -35,11 +34,8 @@ protected:
     Vector3 pos;
     Vector3 old_pos;
     double mass;
-    Vector3 velocity;
-    Vector3 impulse;
-    Vector3 displacement;
+    Vector3 force;
     bool locked;
-    double old_deltaT;
         
     void doVerletStep(double deltaT);
     

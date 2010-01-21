@@ -9,6 +9,7 @@
 
 #include "stdio.h"
 
+// Height map used to build world
 static double map[10][10] ={{8, 7, 6, 5, 7, 7, 5, 6, 7, 8},
                             {7, 2, 5, 4, 3, 3, 4, 5, 6, 7},
                             {6, 5, 4, 5, 3, 3, 5, 4, 5, 6},
@@ -20,34 +21,12 @@ static double map[10][10] ={{8, 7, 6, 5, 7, 7, 5, 6, 7, 8},
                             {7, 6, 5, 4, 3, 3, 4, 3, 2, 7},
                             {8, 7, 6, 5, 3, 3, 5, 6, 7, 8}};
                                 
-Simulator::Simulator(double creationTime)
+Simulator::Simulator()
 {
     fprintf(stderr, "Creating simulator.\n");
     
-    /*
-    Surface* surface = new Surface(Vector3(-2, 0, -10), Vector3(4, 0, 0), Vector3(0, 0, 20));
-    this->surfaces.addFirst(surface);
-    
-    surface = new Surface(Vector3(2, 0, 10), Vector3(-4, 0, 0), Vector3(0, 0, -20));
-    this->surfaces.addFirst(surface);
-    
-    surface = new Surface(Vector3(1.5, 0, -10), Vector3(16, 8, 0), Vector3(0, 0, 20));
-    this->surfaces.addFirst(surface);
-    
-    surface = new Surface(Vector3(1.5, 0, 10), Vector3(16, 8, -20), Vector3(16, 8, 0));
-    //this->surfaces.addFirst(surface);
-    
-    surface = new Surface(Vector3(-17.5, 8, -10), Vector3(16, -8, 0), Vector3(0, 0, 20));
-    //this->surfaces.addFirst(surface);
-    
-    surface = new Surface(Vector3(-18, 23.5, -10), Vector3(1, -16, 0), Vector3(0, 0, 20));
-    //this->surfaces.addFirst(surface);
-    
-    surface = new Surface(Vector3(17, 7.5, -10), Vector3(1, 16, 0), Vector3(0, 0, 20));
-    //this->surfaces.addFirst(surface);
-    //this->surfaces.addFirst(surface);
-    
-    */
+    // Translate height map to surface polygons
+    // Map dimensions are currently hardcoded
     double xs = 10;
     double ys = 4;
     double zs = 10;
@@ -57,25 +36,22 @@ Simulator::Simulator(double creationTime)
     {
         for (int j = 0; j < size - 1; j++)
         {
+            // Calculate the world coordinates of surface from map
             tl = Vector3((-size / 2 + i) * xs + xs/2, map[i][j] * ys, (-size / 2 + j) * zs + zs/2);
             tr = Vector3((-size / 2 + i + 1) * xs + xs/2, map[i + 1][j] * ys, (-size / 2 + j) * zs + zs/2);
             bl = Vector3((-size / 2 + i) * xs + xs/2, map[i][j + 1] * ys, (-size / 2 + j + 1) * zs + zs/2);
             br = Vector3((-size / 2 + i + 1) * xs + xs/2, map[i + 1][j + 1] * ys, (-size / 2 + j + 1) * zs + zs/2);
             
+            // Add surfaces to surface lookup
             this->surfacemap[i * 2 + j * 10 * 2 + 0] = Surface(tl, tr - tl, bl - tl);
             this->surfacemap[i * 2 + j * 10 * 2 + 1] = Surface(br, bl - br, tr - br);
             
-            //Surface* surface = new Surface(Vector3((-size / 2 + i) * xs, 0, (-size / 2 + j) * zs), Vector3(xs, 0, 0), Vector3(0, 0, zs));
+            // Add surfaces to surface list
             this->surfaces.addFirst(&this->surfacemap[i * 2 + j * 10 * 2 + 0]); 
             this->surfaces.addFirst(&this->surfacemap[i * 2 + j * 10 * 2 + 1]);
         }
     }
     
-    
-    
-    //resetShape(1, 2);
-    
-    this->currentTime = creationTime;
     this->iterations = 0;
     this->rigidSprings = true;
 }
@@ -85,9 +61,11 @@ Simulator::~Simulator()
 
 }
 
+// Remove current shape and create a new shape from id
 void Simulator::resetShape(int id, double size)
 {
 
+    // Remove shapes
     Node<Shape*>* node = this->shapes.getFirst();
     if (node)
     {
@@ -95,8 +73,10 @@ void Simulator::resetShape(int id, double size)
         this->shapes.remove(node);   
     }
 
+    // Position of shape
     Vector3 pos = Vector3(0, size * 4, 0);
 
+    // Create new shape
     switch(id)
     {
         case 1:
@@ -161,21 +141,21 @@ void Simulator::resetShape(int id, double size)
             ClothShape* cloth = new ClothShape(Vector3(0, size*3, 0) + pos * 1.5, size*3, size*6, 15);
             this->shapes.addFirst(cloth); 
             break;        
-        }          
-         
-         
+        }
         default:  
         {  
             fprintf(stderr, "Clearing shapes\n");
             break;
         }
-    };
+    }
 }
 
+// One frame of simulation
 void Simulator::tick(double dt)
 {
     deltaTime = dt;
     
+    // Do 4 physicsteps for each frame
     double timeStep = deltaTime / 4;
     for (double t = 0; t < deltaTime; t += timeStep)
     {        
@@ -185,9 +165,13 @@ void Simulator::tick(double dt)
 
         this->applyForces(timeStep);
 
+        // If rigid constraints are used, make sure the system is "balanced"
+        // before continuing
         if (rigidSprings)
         {       
             bool done = false;
+            // Iterate constraints and collision response until changes are small enough
+            // Use a maximum of 40 iterations
             for (int i = 0; i < 40; i++)
             {
                 done = this->resolveRigidConstraints();
@@ -203,11 +187,10 @@ void Simulator::tick(double dt)
         {
             this->collidePoints();
         }
-        
-
     }
 }
 
+// Render function for all shapes
 void Simulator::renderShapes(bool wireframe)
 {
     if (!wireframe)
@@ -230,6 +213,7 @@ void Simulator::renderShapes(bool wireframe)
     }
 }
 
+// Render function for all surfaces
 void Simulator::renderSurfaces(bool wireframe)
 {
     if (!wireframe)
@@ -252,6 +236,7 @@ void Simulator::renderSurfaces(bool wireframe)
     }
 }
 
+// Apply all accumulated forces on all points
 void Simulator::applyForces(double deltaT)
 {
     Node<Shape*>* node = this->shapes.getFirst();
@@ -262,16 +247,19 @@ void Simulator::applyForces(double deltaT)
     }    
 }
 
+// Apply a constant gravitational force to all points
 void Simulator::addGravity()
 {
     Node<Shape*>* node = this->shapes.getFirst();
     while (node != NULL)
     {
+        // Gravity is enhanced to give a better feel
         node->item->addAcceleration(Vector3(0,-9.81 * 5, 0));
         node = node->next;
     }    
 }
 
+// Apply a force to all points
 void Simulator::attract(Vector3 pos, double strength)
 {
     Node<Shape*>* node = this->shapes.getFirst();
@@ -282,6 +270,7 @@ void Simulator::attract(Vector3 pos, double strength)
     }
 }
 
+// Make sure all rigid constraints are satisfied
 bool Simulator::resolveRigidConstraints()
 {
     bool retval = true;
@@ -294,6 +283,7 @@ bool Simulator::resolveRigidConstraints()
     return retval;
 }
 
+// Add all spring-related forces
 void Simulator::addSpringForces()
 {
     Node<Shape*>* node = this->shapes.getFirst();
@@ -305,6 +295,7 @@ void Simulator::addSpringForces()
 
 }
 
+// Collision detection and response between shapes and surfaces
 void Simulator::collidePoints()
 {
     Node<Shape*>* sh = this->shapes.getFirst();
@@ -315,6 +306,7 @@ void Simulator::collidePoints()
     }
 }
 
+// Toggle usage of rigid constraints
 void Simulator::setRigidSprings(bool enable)
 {
     this->rigidSprings = enable;

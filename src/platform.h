@@ -1,6 +1,7 @@
 #ifndef PROJECT_PLATFORM_H
 #define PROJECT_PLATFORM_H
 
+// Platform layer class, serves as an interface to platform-specific details
 class Platform
 {
 

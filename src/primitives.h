@@ -3,10 +3,9 @@
 
 class Matrix3;
 
-
+// 3-dimensional vector class
 class Vector3
 {
-    friend class Matrix3;
 
 public:
     Vector3(double x, double y, double z);
@@ -38,24 +37,7 @@ private:
     double d[3];
 };
 
-class Matrix3
-{
-public:
-    Matrix3(double x1, double x2, double x3, double y1, double y2, double y3, double z1, double z2, double z3);
-    Matrix3();
-
-    static Matrix3 createRotation(Vector3 vect);
-
-    Vector3 operator*(const Vector3& vect);
-
-protected:
-private:
-    
-    double d[3][3];
-};
-
-
-
+// 3-dimensional "rectangle"
 class Box
 {
 public:

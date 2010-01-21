@@ -1,7 +1,7 @@
 #ifndef PROJECT_OPENGL_H
 #define PROJECT_OPENGL_H
 
-
+// All includes needed for opengl operations
 #ifndef WIN32
     #include "GL/glext.h"
 #else

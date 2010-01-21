@@ -13,6 +13,7 @@ struct Node
     T item;
 };
 
+// Linked list class, uses Node class for nodes
 template<typename T>
 class LinkedList
 {

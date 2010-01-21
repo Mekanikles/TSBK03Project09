@@ -21,18 +21,21 @@ const double frameLength = 1.0/30;
 Simulator* sim;
 Renderer* renderer;
 
-
+// Handles all input to the simulator
 void handleInput()
 {
     static double size = 2;
 
+    // Get viewing relative movement
     double mrelx = platform->getMouseRelX();
     double mrely = platform->getMouseRelY();
 
+    // Get position relative movement
     double relx = -platform->getChar('A') + platform->getChar('D');
     double relz = -platform->getChar('W') + platform->getChar('S');
     double rely = -platform->getChar('Q') + platform->getChar('E');
     
+    // If the left mousebutton is pressed, mouse movement applies a horizontal force to the simulation orthogonal to the camera eye vector
     if (platform->getMouseButton(0))
     {
         Vector3 v = Vector3(mrelx, 0, mrely);
@@ -41,12 +44,14 @@ void handleInput()
         
         sim->attract(rotv, 10);
     }
+    // The right mousebutton applies a vertical force
     if (platform->getMouseButton(1))
     {
         Vector3 v = Vector3(0, -mrely, 0);   
         sim->attract(v, 10);
     }
     
+    // If no button is pressed, mouse movement controls viewing
     if (!platform->getMouseButton(0) && !platform->getMouseButton(1))
     {
         if (mrelx)
@@ -56,10 +61,11 @@ void handleInput()
             renderer->tiltCamera(mrely);
     }
     
+    // Move camera position
     if (relx || rely || relz)
         renderer->moveCamera(Vector3(relx/2, rely/2, relz/2));
     
-    // Changing size
+    // Changing shape size
     if (platform->getChar('T'))
     {
         size+=10*frameLength;
@@ -121,7 +127,6 @@ void handleInput()
         fprintf(stderr, "Spring constant: %f\n", e);    
     }    
     
-
     // Changing spring dampening
     if (platform->getChar('J'))
     {
@@ -166,7 +171,6 @@ void handleInput()
         fprintf(stderr, "Spring maxlength: %f\n", l);
     }    
     
-
     // Changing spring minlength
     if (platform->getChar('L'))
     {
@@ -189,7 +193,6 @@ void handleInput()
         fprintf(stderr, "Spring minlength: %f\n", l);
     }    
             
- 
     // Toggle using rigid springs
     if (platform->getChar('C'))
     {
@@ -201,7 +204,6 @@ void handleInput()
         sim->setRigidSprings(false);
         fprintf(stderr, "Rigid springs disabled\n");
     }      
-
 
     // Toggle using wireframes
     if (platform->getChar('P'))
@@ -215,8 +217,8 @@ void handleInput()
         fprintf(stderr, "Wireframe disabled\n");
     }      
 
-
-    // Shape creation
+    // Get states of numerical keys
+    // Keys 1-9 create different shapes, key 0 removes current shape
     int digitkey;
     for (digitkey = 0; digitkey < 10; digitkey++)
     {
@@ -232,7 +234,7 @@ void handleInput()
 
 }
 
-
+// Main loop, runs every frame
 void mainloop(double dt)
 {
     sim->tick(dt);
@@ -240,23 +242,24 @@ void mainloop(double dt)
     renderer->render(sim);
 }
 
-
+// Initialize everything
 void init()
 {
-    sim = new Simulator(platform->getTime());
+    // Initialize platform layer
+    platform = Platform::getInstance();
+    platform->initialize(640, 480, false);
+    
+    sim = new Simulator();
     renderer = new Renderer();   
 }
 
+// Program entry
 int main()
 {
     fprintf(stderr, "Project start!\n");
-  
     fprintf(stderr, "Use digits 1-9 to create shapes!\n");
-  
-    platform = Platform::getInstance();
-  
-    platform->initialize(640, 480, false);
- 
+    fprintf(stderr, "Use keys X and C to toggle usage of rigid constraints\n");
+
     init();
 
     double t = platform->getTime();

@@ -23,23 +23,26 @@ Vector3 Point::getPos()
     return this->pos;
 }
 
+// Set new position
 void Point::setPos(const Vector3& new_pos)
 {
     this->pos = new_pos;
-    //this->old_pos = new_pos;
 }
 
+// Set new and old position explicitly, use this to set velocity
 void Point::setPos(const Vector3& new_pos, const Vector3& old_pos)
 {
     this->pos = new_pos;
     this->old_pos = old_pos;
 }
 
-void Point::addImpulse(Vector3 impulse)
+// Add a force to the point
+void Point::addForce(Vector3 force)
 {
-   this->impulse += impulse;
+   this->force += force;
 }
 
+// Move a point, does not apply to locked points
 void Point::displace(Vector3 d)
 {
     if (!this->locked)
@@ -48,40 +51,30 @@ void Point::displace(Vector3 d)
     }
 }
 
+// Perform verlet integration step
 void Point::doVerletStep(double deltaT)
 {
     // Calculate velocity
     Vector3 temp = this->pos;
    
-   
-    /*
-    //this->velocity = (this->pos - this->old_pos) / deltaT;
-    this->velocity = this->velocity - this->velocity * (0.5 * deltaT);
-    this->velocity += (this->impulse/this->mass) * deltaT;
-    
-    // Verlet integration
-    this->pos += this->velocity * deltaT;
-    this->pos += (this->impulse/this->mass) * deltaT * deltaT;
-    */
-    
     if (!this->locked)
     {
+        // Simulate an energy loss of 20% per second
         double f = 0.2 * deltaT;
-        this->pos = this->pos*(2-f) - this->old_pos*(1-f) + this->impulse/this->mass * deltaT * deltaT;
+        this->pos = this->pos*(2-f) - this->old_pos*(1-f) + this->force/this->mass * deltaT * deltaT;
     }
     
     this->old_pos = temp;
-    this->old_deltaT = deltaT;
-
 }
 
+// Apply accumulated force
 void Point::applyForce(double deltaT)
 {
     doVerletStep(deltaT);
-    this->impulse = Vector3(0, 0, 0);
+    this->force = Vector3(0, 0, 0);
 }
 
-Vector3 Point::getImpulse()
+Vector3 Point::getForce()
 {
     return this->impulse;
 }
@@ -91,16 +84,12 @@ Vector3 Point::getVelocity()
     return this->pos - this->old_pos;
 }
 
-void Point::setVelocity(const Vector3& vel)
-{   
-    this->velocity = vel; //this->pos - this->old_pos;
-}
-
 double Point::getMass()
 {
     return this->mass;
 }
 
+// Lock point, prevent it from moving due to displacements
 void Point::lock(bool set)
 {
     this->locked = set;

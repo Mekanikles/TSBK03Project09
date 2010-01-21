@@ -12,7 +12,7 @@ class Simulator
 {
 public:      
 
-    Simulator(double creationTime);
+    Simulator();
     ~Simulator();
 
     void tick(double dt);

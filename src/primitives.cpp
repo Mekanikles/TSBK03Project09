@@ -107,31 +107,6 @@ Vector3& Vector3::normalize()
     return *this;
 }
 
-
-Matrix3::Matrix3(double x1, double x2, double x3, double y1, double y2, double y3, double z1, double z2, double z3)
-{
-    this->d[0][0] = x1; this->d[1][0] = x2; this->d[2][0] = x3;
-    this->d[0][1] = y1; this->d[1][1] = y2; this->d[2][1] = y3;
-    this->d[0][2] = z1; this->d[1][2] = z2; this->d[2][2] = z3;
-}
-Matrix3::Matrix3()
-{
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-            this->d[i][j] = 0.0;
-}
-
-Vector3 Matrix3::operator*(const Vector3& vect)
-{
-    Vector3 v;
-    for (int j = 0; j < 3; j++)
-        for (int i = 0; i < 3; i++)
-            v.d[j] += this->d[j][i]*vect.d[j];
-
-    return v;
-}
-
-
 Box::Box(const Vector3& v1, const Vector3& v2):
     v1(v1), v2(v2)
 {

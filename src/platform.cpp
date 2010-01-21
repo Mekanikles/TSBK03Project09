@@ -23,11 +23,6 @@ bool Platform::initialize(int windowWidth, int windowHeight, bool fullscreen)
 {
     if (!glfwInit())
     {
-        return false;
-    }
-    
-    if (!glfwInit())
-    {
         fprintf(stderr, "Could not initialize glfw!\n");
         return false;
     }
@@ -48,13 +43,14 @@ bool Platform::initialize(int windowWidth, int windowHeight, bool fullscreen)
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-	glShadeModel(GL_SMOOTH);						// Enable Smooth Shading
-	glClearDepth(1.0f);							// Depth Buffer Setup
-	glDepthFunc (GL_LESS);	    							// The Type Of Depth Testing To Do
+	glClearDepth(1.0f);
+	glDepthFunc (GL_LESS);
 	
-    glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);	// Use The Good Calculations
+    // Use line antialiasing for toon-border effect
+    glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
     glEnable (GL_LINE_SMOOTH);
     
+    // Use glew for opengl>1.2 extensions on win32
     #ifdef WIN32
         GLenum err = glewInit();
         if (GLEW_OK != err)
